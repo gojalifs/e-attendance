@@ -9,62 +9,74 @@ class LoginPage extends StatelessWidget {
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
       child: Scaffold(
-        body: SafeArea(
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 50, right: 50, left: 50),
-              child: Column(
-                children: [
-                  const Icon(Icons.login, size: 200),
-                  const SizedBox(height: 20),
-                  Text(
-                    'Login e-Absensi',
-                    style: Theme.of(context).textTheme.headlineLarge!.copyWith(
-                          color: Colors.black,
-                          fontSize: 50,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(50),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Icon(Icons.login, size: 200),
+                const SizedBox(height: 20),
+                Text(
+                  'Login e-Absensi',
+                  style: Theme.of(context).textTheme.headlineLarge!.copyWith(
+                        color: Colors.black,
+                        fontSize: 50,
+                      ),
+                ),
+                const SizedBox(height: 100),
+                Form(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 60,
+                        child: TextFormField(
+                          decoration: const InputDecoration(
+                            labelText: 'No. ID',
+                          ),
                         ),
-                  ),
-                  const SizedBox(height: 100),
-                  Form(
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 60,
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'No. ID',
+                      ),
+                      const SizedBox(height: 30),
+                      SizedBox(
+                        height: 60,
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            suffixIcon: IconButton(
+                              onPressed: () {},
+                              icon: const Icon(Icons.remove_red_eye_rounded),
                             ),
                           ),
                         ),
-                        const SizedBox(height: 30),
-                        SizedBox(
-                          height: 60,
-                          child: TextFormField(
-                            decoration: const InputDecoration(
-                              labelText: 'Password',
-                            ),
-                          ),
+                      ),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text('Lupa Kata Sandi'),
                         ),
-                        const SizedBox(height: 30),
-                        SizedBox(
-                          width: double.infinity,
-                          height: 60,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Navigator.push(context, MaterialPageRoute(
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        height: 60,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
                                 builder: (context) {
                                   return const HomePage();
                                 },
-                              ));
-                            },
-                            child: const Text('LOGIN'),
-                          ),
+                              ),
+                            );
+                          },
+                          child: const Text('LOGIN'),
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),

@@ -1,12 +1,16 @@
+import 'package:e_presention/pages/profile_page.dart';
+import 'package:e_presention/pages/report_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:e_presention/pages/scan_page.dart';
 
 class HomePage extends StatelessWidget {
+  static const routeName = '/home';
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    ThemeData style = Theme.of(context);
     return GestureDetector(
       child: Scaffold(
         floatingActionButton: FloatingActionButton.extended(
@@ -15,100 +19,135 @@ class HomePage extends StatelessWidget {
           label: const Text('Ajukan Izin Keluar'),
         ),
         body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    /// TODO avatar
-                    const Expanded(
-                      child: Padding(
-                        padding: EdgeInsets.only(right: 20),
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, ProfilePage.routeName);
+                  },
+                  child: Row(
+                    children: [
+                      /// TODO avatar
+                      const Expanded(
                         child: Icon(
                           Icons.account_circle_rounded,
-                          size: 50,
+                          size: 75,
                         ),
                       ),
-                    ),
-                    Expanded(
-                      flex: 5,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: const [
-                          Text(
-                            'Halo, Fajar',
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
+                      const SizedBox(width: 10),
+                      Expanded(
+                        flex: 4,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Halo, Rudi',
+                              style: TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          Text('Selamat Pagi!'),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(20),
-                      topRight: Radius.circular(20),
-                    ),
-                  ),
-                  child: GridView.count(
-                    primary: false,
-                    shrinkWrap: true,
-                    crossAxisCount: 2,
-                    childAspectRatio: 2 / 1,
-                    children: [
-                      MainGridView(
-                        time: '06.25',
-                        caption: 'Anda Sudah Presen',
-                        icon: Icons.login,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const ScanPage(type: 'Masuk');
-                              },
+                            const SizedBox(height: 10),
+                            Text(
+                              'Selamat Pagi!',
+                              style: style.textTheme.bodyMedium
+                                  ?.copyWith(color: Colors.black54),
                             ),
-                          );
-                        },
-                      ),
-                      MainGridView(
-                        time: 'belum scan pulang',
-                        caption: 'tap untuk pulang',
-                        icon: Icons.logout_sharp,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return const ScanPage(type: 'Keluar');
-                              },
-                            ),
-                          );
-                        },
-                      ),
-                      const MainGridView(
-                        time: '10 hari',
-                        caption: 'Kehadiran Bulan Ini',
-                        icon: Icons.calendar_today_sharp,
-                      ),
-                      const MainGridView(
-                        time: '',
-                        caption: 'Laporan Kehadiran',
-                        icon: Icons.assignment_sharp,
+                          ],
+                        ),
                       ),
                     ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(40),
+                      topRight: Radius.circular(40),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const SizedBox(height: 10),
+                        Text(
+                          'Kehadiran Anda',
+                          style: style.textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 20),
+                        GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 2,
+                          childAspectRatio: 2 / 1.5,
+                          children: [
+                            MainGridView(
+                              time: '06.25',
+                              caption: 'Anda Sudah Presen',
+                              icon: Icons.login,
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  ScanPage.routeName,
+                                  arguments: 'masuk',
+                                );
+                              },
+                            ),
+                            MainGridView(
+                              time: 'belum scan pulang',
+                              caption: 'tap untuk pulang',
+                              icon: Icons.logout_sharp,
+                              onTap: () {
+                                Navigator.pushNamed(context, ScanPage.routeName,
+                                    arguments: 'pulang');
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          'Laporan Bulan Ini',
+                          style: style.textTheme.titleMedium,
+                        ),
+                        const SizedBox(height: 20),
+                        GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 2,
+                          childAspectRatio: 2 / 1.5,
+                          children: [
+                            const MainGridView(
+                              time: '10 hari',
+                              caption: 'Kehadiran Bulan Ini',
+                              icon: Icons.calendar_today_sharp,
+                            ),
+                            MainGridView(
+                              time: '',
+                              caption:
+                                  'Tap Untuk Laporan Kehadiran Lebih Lengkap',
+                              icon: Icons.assignment_sharp,
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  ReportPage.routeName,
+                                );
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -132,25 +171,51 @@ class MainGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    ThemeData style = Theme.of(context);
     return InkWell(
       onTap: onTap,
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        color: !time.contains('belum')
+            ? const Color.fromRGBO(36, 219, 122, 1)
+            : Colors.red,
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(time),
-                  Text(caption),
-                ],
+              Align(
+                alignment: Alignment.topRight,
+                child: Icon(
+                  icon,
+                  color: Colors.white70,
+                  size: 40,
+                ),
               ),
-              Icon(icon),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    time,
+                    style: time.contains(RegExp(r'[0-9]'))
+                        ? style.textTheme.titleLarge
+                        : style.textTheme.titleSmall
+                            ?.copyWith(color: Colors.white),
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Text(
+                  caption,
+                  style: style.textTheme.bodyMedium
+                      ?.copyWith(color: Colors.black54),
+                  textAlign: TextAlign.center,
+                ),
+              ),
             ],
           ),
         ),
