@@ -1,5 +1,5 @@
-import 'package:e_presention/pages/pict.dart';
-import 'package:e_presention/pages/upload_image_page.dart';
+import 'package:e_presention/screens/pict.dart';
+import 'package:e_presention/screens/upload_image_page.dart';
 import 'package:flutter/material.dart';
 
 class ScanPage extends StatefulWidget {

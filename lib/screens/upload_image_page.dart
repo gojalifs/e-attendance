@@ -1,4 +1,4 @@
-import 'package:e_presention/pages/success_upload_page.dart';
+import 'package:e_presention/screens/success_upload_page.dart';
 import 'package:flutter/material.dart';
 
 class UploadPage extends StatefulWidget {

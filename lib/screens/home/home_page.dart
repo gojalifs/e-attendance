@@ -1,12 +1,38 @@
-import 'package:e_presention/pages/profile_page.dart';
-import 'package:e_presention/pages/report_page.dart';
 import 'package:flutter/material.dart';
 
-import 'package:e_presention/pages/scan_page.dart';
+import 'package:e_presention/screens/profile_page.dart';
+import 'package:e_presention/screens/report_page.dart';
+import 'package:e_presention/screens/scan_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   static const routeName = '/home';
+
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  String greeting = '';
+  @override
+  void initState() {
+    super.initState();
+    _updateGreeting();
+  }
+
+  void _updateGreeting() {
+    var hour = DateTime.now().hour;
+    if (hour < 10 && hour >= 5) {
+      greeting = "Pagi!";
+    } else if (hour < 15) {
+      greeting = "Siang!";
+    } else if (hour < 19) {
+      greeting = 'Sore!';
+    } else {
+      greeting = 'Malam!';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +78,7 @@ class HomePage extends StatelessWidget {
                             ),
                             const SizedBox(height: 10),
                             Text(
-                              'Selamat Pagi!',
+                              'Selamat $greeting',
                               style: style.textTheme.bodyMedium
                                   ?.copyWith(color: Colors.black54),
                             ),
@@ -85,6 +111,7 @@ class HomePage extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
                         GridView.count(
+                          primary: false,
                           shrinkWrap: true,
                           crossAxisCount: 2,
                           childAspectRatio: 2 / 1.5,
@@ -119,6 +146,7 @@ class HomePage extends StatelessWidget {
                         ),
                         const SizedBox(height: 20),
                         GridView.count(
+                          primary: false,
                           shrinkWrap: true,
                           crossAxisCount: 2,
                           childAspectRatio: 2 / 1.5,

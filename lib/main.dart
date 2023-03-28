@@ -1,11 +1,11 @@
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:e_presention/custom_theme.dart';
-import 'package:e_presention/pages/home_page.dart';
-import 'package:e_presention/pages/profile_page.dart';
-import 'package:e_presention/pages/report_page.dart';
-import 'package:e_presention/pages/scan_page.dart';
-import 'package:e_presention/pages/success_upload_page.dart';
-import 'package:e_presention/pages/upload_image_page.dart';
+import 'package:e_presention/utils/custom_theme.dart';
+import 'package:e_presention/screens/home/home_page.dart';
+import 'package:e_presention/screens/profile_page.dart';
+import 'package:e_presention/screens/report_page.dart';
+import 'package:e_presention/screens/scan_page.dart';
+import 'package:e_presention/screens/success_upload_page.dart';
+import 'package:e_presention/screens/upload_image_page.dart';
 import 'package:flutter/material.dart';
 import 'package:scaled_app/scaled_app.dart';
 

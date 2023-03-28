@@ -1,4 +1,4 @@
-import 'package:e_presention/pages/home_page.dart';
+import 'package:e_presention/screens/home/home_page.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -61,14 +61,8 @@ class LoginPage extends StatelessWidget {
                         height: 60,
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return const HomePage();
-                                },
-                              ),
-                            );
+                            Navigator.of(context)
+                                .pushReplacementNamed(HomePage.routeName);
                           },
                           child: const Text('LOGIN'),
                         ),
