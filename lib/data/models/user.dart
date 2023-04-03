@@ -1,41 +1,65 @@
 import 'dart:convert';
 
 class User {
-  final int id;
-  final String name;
-  final String nik;
-  final String nip;
-  final String email;
-  final String gender;
-  final String telp;
-  final String isAdmin;
+  final int? id;
+  final String? nik;
+  final String? nama;
+  final String? nipns;
+  final String? email;
+  final String? gender;
+  final String? telp;
+  final int? isAdmin;
+  final String? token;
+  final String? tokenExpiry;
+  final String? createdAt;
+  final String? updatedAt;
 
-  User(this.id, this.name, this.nik, this.nip, this.email, this.gender,
-      this.telp, this.isAdmin);
+  User({
+    this.id,
+    this.nik,
+    this.nama,
+    this.nipns,
+    this.email,
+    this.gender,
+    this.telp,
+    this.isAdmin,
+    this.token,
+    this.tokenExpiry,
+    this.createdAt,
+    this.updatedAt,
+  });
 
   Map<String, dynamic> toMap() {
     return {
       'id': id,
-      'name': name,
       'nik': nik,
-      'nip': nip,
+      'nama': nama,
+      'nipns': nipns,
       'email': email,
       'gender': gender,
       'telp': telp,
       'isAdmin': isAdmin,
+      'token': token,
+      'tokenExpiry': tokenExpiry,
+      'createdAt': createdAt,
+      'updatedAt': updatedAt,
     };
   }
 
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      map['id']?.toInt() ?? 0,
-      map['name'] ?? '',
-      map['nik'] ?? '',
-      map['nip'] ?? '',
-      map['email'] ?? '',
-      map['gender'] ?? '',
-      map['telp'] ?? '',
-      map['isAdmin'] ?? '',
+      id: map['id']?.toInt(),
+      nik: map['nik'],
+      nama: map['nama'],
+      nipns: map['nipns'],
+      email: map['email'],
+      gender: map['gender'],
+      telp: map['telp'],
+      isAdmin: map['isAdmin']?.toInt(),
+      token: map['token'],
+      tokenExpiry: map['tokenExpiry'],
+      createdAt: map['createdAt'],
+      updatedAt: map['updatedAt'],
     );
   }
 

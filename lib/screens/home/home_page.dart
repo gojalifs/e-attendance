@@ -1,8 +1,10 @@
+import 'package:e_presention/data/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:e_presention/screens/profile_page.dart';
 import 'package:e_presention/screens/report_page.dart';
 import 'package:e_presention/screens/scan_page.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/home';
@@ -17,8 +19,8 @@ class _HomePageState extends State<HomePage> {
   String greeting = '';
   @override
   void initState() {
-    super.initState();
     _updateGreeting();
+    super.initState();
   }
 
   void _updateGreeting() {
@@ -54,38 +56,43 @@ class _HomePageState extends State<HomePage> {
                   onTap: () {
                     Navigator.pushNamed(context, ProfilePage.routeName);
                   },
-                  child: Row(
-                    children: [
-                      /// TODO avatar
-                      const Expanded(
-                        child: Icon(
-                          Icons.account_circle_rounded,
-                          size: 75,
+                  child: Consumer<AuthProvider>(
+                    builder: (context, value, child) => Row(
+                      children: [
+                        /// TODO avatar
+                        const Expanded(
+                          child: Hero(
+                            tag: 'avatar',
+                            child: Icon(
+                              Icons.account_circle_rounded,
+                              size: 75,
+                            ),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 10),
-                      Expanded(
-                        flex: 4,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Halo, Rudi',
-                              style: TextStyle(
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold,
+                        const SizedBox(width: 10),
+                        Expanded(
+                          flex: 4,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Halo, ${value.user!.nama}',
+                                style: const TextStyle(
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                              'Selamat $greeting',
-                              style: style.textTheme.bodyMedium
-                                  ?.copyWith(color: Colors.black54),
-                            ),
-                          ],
+                              const SizedBox(height: 10),
+                              Text(
+                                'Selamat $greeting',
+                                style: style.textTheme.bodyMedium
+                                    ?.copyWith(color: Colors.black54),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
