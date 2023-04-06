@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:e_presention/data/models/user.dart';
 import 'package:e_presention/env/env.dart';
+import 'package:e_presention/services/sqflite_service.dart';
 import 'package:http/http.dart' as http;
 
 class ApiService {
@@ -17,20 +18,27 @@ class ApiService {
   Future<User> login(String id, String password) async {
     var endpoint = Uri.parse('$baseUrl/user/login');
 
-    var resp = await http.post(endpoint, body: {
+    var resp = await http.post(endpoint, headers: {
+      'Accept': 'application/json'
+    }, body: {
       'nik': id,
       'password': password,
     });
-    print(resp.statusCode);
+
     try {
-      // if (resp.statusCode == 200) {
-      var data = jsonDecode(resp.body);
-      print(data['data'].runtimeType);
-      User user = User.fromMap(data['data']);
-      return user;
-      // } else {}
+      if (resp.statusCode == 200) {
+        Map<String, dynamic> data = jsonDecode(resp.body)['data'];
+        data['isLoggedIn'] = 1;
+        print(data);
+        User user = User.fromMap(data);
+        SqfLiteService().saveUser(user);
+
+        return user;
+      } else {
+        throw 'invalid credential';
+      }
     } catch (e) {
-      throw 'failed login $e';
+      throw 'failed login, $e';
     }
   }
 

@@ -1,18 +1,21 @@
-import 'package:e_presention/data/providers/auth_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:e_presention/screens/login/login_page.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:e_presention/utils/custom_theme.dart';
+import 'package:provider/provider.dart';
+import 'package:scaled_app/scaled_app.dart';
+
+import 'package:e_presention/data/providers/auth_provider.dart';
 import 'package:e_presention/screens/home/home_page.dart';
+import 'package:e_presention/screens/login/login_page.dart';
 import 'package:e_presention/screens/profile_page.dart';
 import 'package:e_presention/screens/report_page.dart';
 import 'package:e_presention/screens/scan_page.dart';
 import 'package:e_presention/screens/success_upload_page.dart';
 import 'package:e_presention/screens/upload_image_page.dart';
-import 'package:flutter/material.dart';
-import 'package:scaled_app/scaled_app.dart';
+import 'package:e_presention/services/sqflite_service.dart';
+import 'package:e_presention/utils/custom_theme.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID');
   // runAppScaled(
   //   const MyApp(),
@@ -21,16 +24,32 @@ void main() async {
   //     return deviceSize.width / baseWidth;
   //   },
   // );
+  SqfLiteService service = SqfLiteService();
+  Widget homeRoute = const LoginPage();
+  await service.checkLoginStatus().then((value) {
+    if (value) {
+      homeRoute = const HomePage();
+    } else {
+      homeRoute = const LoginPage();
+    }
+  });
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => AuthProvider(),
-      child: const MyApp(),
+      child: MyApp(
+        homeWidget: homeRoute,
+      ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final Widget homeWidget;
+  const MyApp({
+    Key? key,
+    required this.homeWidget,
+  }) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -38,9 +57,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: CustomTheme.themeData,
-      initialRoute: '/',
+      // initialRoute: '/',
+      home: Consumer<AuthProvider>(builder: (context, value, child) {
+        value.checkLoginStatus();
+        return homeWidget;
+      }),
       routes: {
-        '/': (context) => const LoginPage(),
         LoginPage.routeName: (context) => const LoginPage(),
         HomePage.routeName: (context) => const HomePage(),
         UploadPage.routeName: (context) => const UploadPage(),

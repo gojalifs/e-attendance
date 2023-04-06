@@ -2,6 +2,7 @@ import 'package:e_presention/data/providers/auth_provider.dart';
 import 'package:e_presention/screens/home/home_page.dart';
 import 'package:e_presention/services/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -45,6 +46,8 @@ class _LoginPageState extends State<LoginPage> {
                         height: 60,
                         child: TextFormField(
                           controller: nikController,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Tidak boleh kosong';
@@ -62,6 +65,10 @@ class _LoginPageState extends State<LoginPage> {
                         height: 60,
                         child: TextFormField(
                           controller: passController,
+                          textInputAction: TextInputAction.go,
+                          onFieldSubmitted: (value) {
+                            FocusScope.of(context).unfocus();
+                          },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Tidak boleh kosong';
@@ -89,20 +96,41 @@ class _LoginPageState extends State<LoginPage> {
                         width: double.infinity,
                         height: 60,
                         child: Consumer<AuthProvider>(
-                          builder: (context, value, child) => ElevatedButton(
-                            onPressed: () async {
-                              FocusScope.of(context).unfocus();
-                              if (formKey.currentState!.validate()) {
-                                await value
-                                    .login(nikController.text.trim(),
-                                        passController.text.trim())
-                                    .then((_) => Navigator.of(context)
-                                        .pushReplacementNamed(
-                                            HomePage.routeName));
-                              }
-                            },
-                            child: const Text('LOGIN'),
-                          ),
+                          builder: (context, value, child) {
+                            if (value.connectionState !=
+                                ConnectionState.active) {
+                              return ElevatedButton(
+                                onPressed: () async {
+                                  FocusScope.of(context).unfocus();
+                                  if (formKey.currentState!.validate()) {
+                                    await value
+                                        .login(nikController.text.trim(),
+                                            passController.text.trim())
+                                        .then(
+                                          (_) => Navigator.of(context)
+                                              .pushReplacementNamed(
+                                                  HomePage.routeName),
+                                        )
+                                        .onError(
+                                      (error, stackTrace) {
+                                        print(error);
+                                        return MotionToast.warning(
+                                          title: const Text('Login Failed'),
+                                          description: Text(
+                                            error.toString(),
+                                          ),
+                                        ).show(context);
+                                      },
+                                    );
+                                  }
+                                },
+                                child: const Text('LOGIN'),
+                              );
+                            } else {
+                              return const Center(
+                                  child: CircularProgressIndicator.adaptive());
+                            }
+                          },
                         ),
                       ),
                     ],
