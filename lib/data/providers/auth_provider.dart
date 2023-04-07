@@ -27,7 +27,10 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future checkLoginStatus() async {
+  Future<bool> checkLoginStatus() async {
+    int i = 0;
+    i++;
+    print('${i}');
     bool status = false;
     await SqfLiteService().checkLoginStatus().then((value) {
       status = value;
@@ -37,6 +40,7 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
     notifyListeners();
+    return status;
   }
 
   Future logout() async {

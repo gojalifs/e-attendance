@@ -1,3 +1,5 @@
+import 'package:e_presention/data/providers/presention_provider.dart';
+import 'package:e_presention/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +15,7 @@ import 'package:e_presention/screens/success_upload_page.dart';
 import 'package:e_presention/screens/upload_image_page.dart';
 import 'package:e_presention/services/sqflite_service.dart';
 import 'package:e_presention/utils/custom_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,17 +29,22 @@ void main() async {
   // );
   SqfLiteService service = SqfLiteService();
   Widget homeRoute = const LoginPage();
-  await service.checkLoginStatus().then((value) {
-    if (value) {
-      homeRoute = const HomePage();
-    } else {
-      homeRoute = const LoginPage();
-    }
-  });
+  final SharedPreferences preferences = await SharedPreferences.getInstance();
+  bool? value = preferences.getBool('isLoggedIn') ?? false;
+  // await service.checkLoginStatus().then((value) {
+  if (!value) {
+    homeRoute = const HomePage();
+  } else {
+    homeRoute = const LoginPage();
+  }
+  // });
 
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => PresentProvider()),
+      ],
       child: MyApp(
         homeWidget: homeRoute,
       ),
@@ -58,10 +66,7 @@ class MyApp extends StatelessWidget {
       title: 'Flutter Demo',
       theme: CustomTheme.themeData,
       // initialRoute: '/',
-      home: Consumer<AuthProvider>(builder: (context, value, child) {
-        value.checkLoginStatus();
-        return homeWidget;
-      }),
+      home: const CustomSplashScreen(),
       routes: {
         LoginPage.routeName: (context) => const LoginPage(),
         HomePage.routeName: (context) => const HomePage(),

@@ -1,9 +1,11 @@
 import 'package:e_presention/data/providers/auth_provider.dart';
+import 'package:e_presention/data/providers/presention_provider.dart';
 import 'package:e_presention/screens/home/home_page.dart';
 import 'package:e_presention/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/login';
@@ -95,23 +97,33 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(
                         width: double.infinity,
                         height: 60,
-                        child: Consumer<AuthProvider>(
-                          builder: (context, value, child) {
-                            if (value.connectionState !=
+                        child: Consumer2<AuthProvider, PresentProvider>(
+                          builder: (context, auth, present, child) {
+                            if (auth.connectionState !=
                                 ConnectionState.active) {
                               return ElevatedButton(
                                 onPressed: () async {
                                   FocusScope.of(context).unfocus();
+                                  final SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  await prefs.setBool('isLoggedIn', true);
                                   if (formKey.currentState!.validate()) {
-                                    await value
+                                    await auth
                                         .login(nikController.text.trim(),
                                             passController.text.trim())
                                         .then(
-                                          (_) => Navigator.of(context)
-                                              .pushReplacementNamed(
-                                                  HomePage.routeName),
-                                        )
-                                        .onError(
+                                      (_) async {
+                                        await present.getPresention(
+                                            auth.user!.nik!, auth.user!.token!);
+
+                                        if (!mounted) {
+                                          return null;
+                                        }
+                                        return Navigator.of(context)
+                                            .pushReplacementNamed(
+                                                HomePage.routeName);
+                                      },
+                                    ).onError(
                                       (error, stackTrace) {
                                         print(error);
                                         return MotionToast.warning(

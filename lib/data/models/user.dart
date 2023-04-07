@@ -25,7 +25,7 @@ class User {
     this.gender = '',
     this.telp = '',
     this.isAdmin = 0,
-    this.avaPath,
+    this.avaPath = '',
     this.token = '',
     this.tokenExpiry = '',
     this.createdAt = '',

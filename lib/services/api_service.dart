@@ -1,9 +1,14 @@
 import 'dart:convert';
+import 'dart:io';
 
-import 'package:e_presention/data/models/user.dart';
 import 'package:e_presention/env/env.dart';
 import 'package:e_presention/services/sqflite_service.dart';
+
 import 'package:http/http.dart' as http;
+
+import '../data/models/presention.dart';
+import '../data/models/user.dart';
+import '../data/models/today_presention.dart';
 
 class ApiService {
   final baseUrl = Env.URL;
@@ -39,6 +44,55 @@ class ApiService {
       }
     } catch (e) {
       throw 'failed login, $e';
+    }
+  }
+
+  Future<List<Presention>> getPresention(String nik, String token) async {
+    var endPoint = Uri.parse('$baseUrl/presen/$nik');
+
+    try {
+      var resp = await http.get(endPoint, headers: {
+        'Accept': 'application/json',
+        'Authorization': 'Bearer $token',
+      });
+      var data = jsonDecode(resp.body);
+      print(data['data']);
+      List presList = data['data'];
+      var result = presList.map((e) => Presention.fromMap(e)).toList();
+      print(result);
+      return result;
+    } on FormatException {
+      throw 'Bad Response';
+    } on SocketException {
+      throw 'Error on Network';
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<TodayPresention>> getTodayPresention(
+      String nik, String token) async {
+    var endPoint = Uri.parse('$baseUrl/daily');
+
+    try {
+      var resp = await http.post(
+        endPoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: {'nik': nik},
+      );
+      var data = jsonDecode(resp.body);
+      print('data $data');
+      List result = data['data'];
+      return result.map((e) => TodayPresention.fromMap(e)).toList();
+    } on FormatException {
+      throw 'Bad Response';
+    } on SocketException {
+      throw 'Error on Network';
+    } catch (e) {
+      rethrow;
     }
   }
 

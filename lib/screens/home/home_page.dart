@@ -1,4 +1,5 @@
 import 'package:e_presention/data/providers/auth_provider.dart';
+import 'package:e_presention/data/providers/presention_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:e_presention/screens/profile_page.dart';
@@ -39,150 +40,184 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     ThemeData style = Theme.of(context);
+    // Provider.of<AuthProvider>(context, listen: false).checkLoginStatus();
+    Provider.of<PresentProvider>(context, listen: false).getTodayPresention(
+      Provider.of<AuthProvider>(context).user!.nik!,
+      Provider.of<AuthProvider>(context).user!.token!,
+    );
     return GestureDetector(
       child: Scaffold(
-        floatingActionButton: FloatingActionButton.extended(
-          onPressed: () {},
-          icon: const Icon(Icons.edit_square),
-          label: const Text('Ajukan Izin Keluar'),
+        floatingActionButton: Consumer2<PresentProvider, AuthProvider>(
+          builder: (context, present, auth, child) =>
+              FloatingActionButton.extended(
+            onPressed: () {},
+            icon: const Icon(Icons.edit_square),
+            label: const Text('Ajukan Izin Keluar'),
+          ),
         ),
         body: SafeArea(
-          child: Column(
-            children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(vertical: 50, horizontal: 10),
-                child: InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, ProfilePage.routeName);
-                  },
-                  child: Consumer<AuthProvider>(
-                    builder: (context, value, child) => Row(
-                      children: [
-                        /// TODO avatar
-                        const Expanded(
-                          child: Hero(
-                            tag: 'avatar',
-                            child: Icon(
-                              Icons.account_circle_rounded,
-                              size: 75,
+          child: Consumer2<PresentProvider, AuthProvider>(
+            builder: (context, present, auth, child) => RefreshIndicator(
+              onRefresh: () async {
+                await present.getTodayPresention(
+                    auth.user!.nik!, auth.user!.token!);
+              },
+              child: ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 50, horizontal: 10),
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, ProfilePage.routeName);
+                      },
+                      child: Consumer<AuthProvider>(
+                        builder: (context, value, child) => Row(
+                          children: [
+                            /// TODO avatar
+                            Hero(
+                              tag: 'avatar',
+                              child: value.user!.avaPath! == '-' ||
+                                      value.user!.avaPath!.isEmpty
+                                  ? const Icon(
+                                      Icons.account_circle_rounded,
+                                      size: 75,
+                                    )
+                                  : Image.network(value.user!.avaPath!),
                             ),
-                          ),
-                        ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          flex: 4,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Halo, ${value.user!.nama}',
-                                style: const TextStyle(
-                                  fontSize: 40,
-                                  fontWeight: FontWeight.bold,
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Halo, ${value.user!.nama}',
+                                  style: const TextStyle(
+                                    fontSize: 40,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  'Selamat $greeting',
+                                  style: style.textTheme.bodyMedium
+                                      ?.copyWith(color: Colors.black54),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade200,
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(40),
+                        topRight: Radius.circular(40),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          Text(
+                            'Kehadiran Anda',
+                            style: style.textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 20),
+                          Consumer<PresentProvider>(
+                            builder: (context, value, child) {
+                              String timeIn;
+                              if (value.today.isNotEmpty &&
+                                  value.today[0].nik!.isNotEmpty) {
+                                timeIn = value.today[0].time!;
+                              } else {
+                                timeIn = 'Anda Belum Scan';
+                              }
+                              String timeOut;
+                              if (value.today.isNotEmpty &&
+                                  value.today[1].nik!.isNotEmpty) {
+                                timeOut = value.today[1].time!;
+                              } else {
+                                timeOut = 'Anda Belum Scan';
+                              }
+
+                              return GridView.count(
+                                primary: false,
+                                shrinkWrap: true,
+                                crossAxisCount: 2,
+                                childAspectRatio: 2 / 1.5,
+                                children: [
+                                  MainGridView(
+                                    time: timeIn,
+                                    caption: 'Anda Sudah Presen',
+                                    icon: Icons.login,
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                        context,
+                                        ScanPage.routeName,
+                                        arguments: 'masuk',
+                                      );
+                                    },
+                                  ),
+                                  MainGridView(
+                                    time: timeOut.isEmpty
+                                        ? 'belum scan pulang'
+                                        : timeOut,
+                                    caption: 'tap untuk pulang',
+                                    icon: Icons.logout_sharp,
+                                    onTap: () {
+                                      Navigator.pushNamed(
+                                          context, ScanPage.routeName,
+                                          arguments: 'pulang');
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'Laporan Bulan Ini',
+                            style: style.textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 20),
+                          GridView.count(
+                            primary: false,
+                            shrinkWrap: true,
+                            crossAxisCount: 2,
+                            childAspectRatio: 2 / 1.5,
+                            children: [
+                              const MainGridView(
+                                time: '10 hari',
+                                caption: 'Kehadiran Bulan Ini',
+                                icon: Icons.calendar_today_sharp,
                               ),
-                              const SizedBox(height: 10),
-                              Text(
-                                'Selamat $greeting',
-                                style: style.textTheme.bodyMedium
-                                    ?.copyWith(color: Colors.black54),
+                              MainGridView(
+                                time: '',
+                                caption:
+                                    'Tap Untuk Laporan Kehadiran Lebih Lengkap',
+                                icon: Icons.assignment_sharp,
+                                onTap: () {
+                                  Navigator.pushNamed(
+                                    context,
+                                    ReportPage.routeName,
+                                  );
+                                },
                               ),
                             ],
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-              Expanded(
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(40),
-                      topRight: Radius.circular(40),
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const SizedBox(height: 10),
-                        Text(
-                          'Kehadiran Anda',
-                          style: style.textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 20),
-                        GridView.count(
-                          primary: false,
-                          shrinkWrap: true,
-                          crossAxisCount: 2,
-                          childAspectRatio: 2 / 1.5,
-                          children: [
-                            MainGridView(
-                              time: '06.25',
-                              caption: 'Anda Sudah Presen',
-                              icon: Icons.login,
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  ScanPage.routeName,
-                                  arguments: 'masuk',
-                                );
-                              },
-                            ),
-                            MainGridView(
-                              time: 'belum scan pulang',
-                              caption: 'tap untuk pulang',
-                              icon: Icons.logout_sharp,
-                              onTap: () {
-                                Navigator.pushNamed(context, ScanPage.routeName,
-                                    arguments: 'pulang');
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 20),
-                        Text(
-                          'Laporan Bulan Ini',
-                          style: style.textTheme.titleMedium,
-                        ),
-                        const SizedBox(height: 20),
-                        GridView.count(
-                          primary: false,
-                          shrinkWrap: true,
-                          crossAxisCount: 2,
-                          childAspectRatio: 2 / 1.5,
-                          children: [
-                            const MainGridView(
-                              time: '10 hari',
-                              caption: 'Kehadiran Bulan Ini',
-                              icon: Icons.calendar_today_sharp,
-                            ),
-                            MainGridView(
-                              time: '',
-                              caption:
-                                  'Tap Untuk Laporan Kehadiran Lebih Lengkap',
-                              icon: Icons.assignment_sharp,
-                              onTap: () {
-                                Navigator.pushNamed(
-                                  context,
-                                  ReportPage.routeName,
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
         ),
       ),
@@ -211,7 +246,7 @@ class MainGridView extends StatelessWidget {
       onTap: onTap,
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        color: !time.contains('belum')
+        color: time.contains(RegExp(r'[0-9]'))
             ? const Color.fromRGBO(36, 219, 122, 1)
             : Colors.red,
         child: Padding(
