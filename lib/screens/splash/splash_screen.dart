@@ -1,8 +1,7 @@
 import 'package:e_presention/data/providers/auth_provider.dart';
 import 'package:e_presention/screens/home/home_page.dart';
+import 'package:e_presention/screens/login/login_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:provider/provider.dart';
 
 class CustomSplashScreen extends StatefulWidget {
@@ -40,10 +39,15 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
                     child: Text("Terjadi kesalahan: ${snapshot.error}"),
                   );
                 } else {
-                  // Navigasi ke halaman HomePage jika proses inisialisasi telah selesai
-                  // Navigator.pushReplacementNamed(context, HomePage.routeName);
-                  Future.microtask(() => Navigator.pushReplacementNamed(
-                      context, HomePage.routeName));
+                  if (snapshot.data == true) {
+                    // Navigasi ke halaman HomePage jika proses inisialisasi telah selesai
+                    // Navigator.pushReplacementNamed(context, HomePage.routeName);
+                    Future.microtask(() => Navigator.pushReplacementNamed(
+                        context, HomePage.routeName));
+                  } else {
+                    Future.microtask(() => Navigator.pushReplacementNamed(
+                        context, LoginPage.routeName));
+                  }
                   return const CircularProgressIndicator.adaptive();
                 }
               },

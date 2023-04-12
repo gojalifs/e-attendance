@@ -1,4 +1,10 @@
+import 'dart:io';
+
+import 'package:e_presention/data/providers/auth_provider.dart';
+import 'package:e_presention/data/providers/photo_provider.dart';
+import 'package:e_presention/utils/common_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SuccessPage extends StatelessWidget {
   static const routeName = '/success_page';
@@ -21,7 +27,7 @@ class SuccessPage extends StatelessWidget {
   }
 }
 
-class SuccessScanPage extends StatefulWidget {
+class SuccessScanPage extends StatelessWidget {
   SuccessScanPage({
     Key? key,
     this.check = 'Masuk',
@@ -35,72 +41,46 @@ class SuccessScanPage extends StatefulWidget {
       'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8Mnx8dXNlcnxlbnwwfHwwfHw%3D&w=1000&q=80');
 
   @override
-  State<SuccessScanPage> createState() => _SuccessScanPageState();
-}
-
-class _SuccessScanPageState extends State<SuccessScanPage> {
-  /// TODO edit
-  // late UserModel user;
-
-  // late Future future;
-  // Future getUser() async {
-  //   LocalDbHelper localDb = LocalDbHelper();
-  //   user = await localDb.getUser();
-  // }
-
-  // @override
-  // void initState() {
-  //   future = getUser().then((value) => user = value);
-  //   super.initState();
-  // }
-
-  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: SingleChildScrollView(
         child: FutureBuilder(
-          /// TODO
-          // future: future,
           future: Future.delayed(const Duration(seconds: 1)),
           builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
             if (snapshot.connectionState == ConnectionState.done) {
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Center(
-                  child: Card(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
+                child: Card(
+                  child: Consumer2<PhotoProvider, AuthProvider>(
+                    builder: (context, scan, auth, child) => Column(
+                      // mainAxisSize: MainAxisSize.min,
                       children: [
                         const Padding(padding: EdgeInsets.only(bottom: 20)),
                         Container(
-                          width: 50,
-                          height: 50,
                           margin: const EdgeInsets.symmetric(vertical: 10),
-                          child: Image.asset('assets/images/success.gif'),
+                          child: auth.user?.avaPath != '-'
+                              ? Image.asset(auth.user!.avaPath!)
+                              : const Icon(
+                                  Icons.account_circle_rounded,
+                                  size: 100,
+                                ),
                         ),
-                        const _SuccessBody(text1: 'Nama', text2: 'Rudi'),
-                        const Divider(
-                          thickness: 2,
-                          color: Colors.black38,
-                          indent: 10,
-                          endIndent: 10,
-                        ),
+                        _SuccessBody(text1: 'Nama', text2: auth.user!.nama!),
+                        CustomWidget.divider,
                         _SuccessBody(
-                            text1: 'Jam ${widget.check}', text2: widget.time),
-                        const Divider(
-                          thickness: 2,
-                          color: Colors.black38,
-                          indent: 10,
-                          endIndent: 10,
+                          text1: 'Jam $check',
+                          text2: scan.presentionDetail.time!,
                         ),
+                        CustomWidget.divider,
                         const _SuccessBody(text1: 'Status', text2: 'Sukses'),
-                        const Divider(
-                          thickness: 2,
-                          color: Colors.black38,
-                          indent: 10,
-                          endIndent: 10,
-                        ),
-                        widget.image
+                        CustomWidget.divider,
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Consumer<PhotoProvider>(
+                            builder: (context, value, child) =>
+                                Image.file(File(scan.images!.path)),
+                          ),
+                        )
                       ],
                     ),
                   ),

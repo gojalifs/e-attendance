@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
+
 import 'package:e_presention/data/models/presention.dart';
 import 'package:e_presention/data/models/today_presention.dart';
 import 'package:e_presention/services/api_service.dart';
-import 'package:flutter/material.dart';
 
 class PresentProvider with ChangeNotifier {
   final ApiService apiService = ApiService();
@@ -21,7 +22,6 @@ class PresentProvider with ChangeNotifier {
   }
 
   Future getTodayPresention(String nik, String token) async {
-    print('a');
     _state = ConnectionState.active;
     _today = await apiService.getTodayPresention(nik, token);
     _state = ConnectionState.done;

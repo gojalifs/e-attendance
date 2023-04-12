@@ -15,7 +15,6 @@ class _ReportPageState extends State<ReportPage> {
   String period = DateFormat('MMMM', 'ID').format(DateTime.now());
   @override
   void initState() {
-    print(period);
     dropValue = period;
     super.initState();
   }

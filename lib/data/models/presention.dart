@@ -4,7 +4,7 @@ class Presention {
   final int? id;
   final String? idPresensi;
   final String? date;
-  final List<Detail>? details;
+  final List<PresentionDetail>? details;
 
   Presention({
     this.id = 0,
@@ -28,7 +28,8 @@ class Presention {
       idPresensi: map['idPresensi'],
       date: map['date'],
       details: map['details'] != null
-          ? List<Detail>.from(map['details']?.map((x) => Detail.fromMap(x)))
+          ? List<PresentionDetail>.from(
+              map['details']?.map((x) => PresentionDetail.fromMap(x)))
           : null,
     );
   }
@@ -39,13 +40,13 @@ class Presention {
       Presention.fromMap(json.decode(source));
 }
 
-class Detail {
+class PresentionDetail {
   final String? type;
   final String? time;
   final String? longitude;
   final String? latitude;
   final String? imgPath;
-  Detail({
+  PresentionDetail({
     this.type = '',
     this.time = '',
     this.longitude = '',
@@ -63,8 +64,8 @@ class Detail {
     };
   }
 
-  factory Detail.fromMap(Map<String, dynamic> map) {
-    return Detail(
+  factory PresentionDetail.fromMap(Map<String, dynamic> map) {
+    return PresentionDetail(
       type: map['type'],
       time: map['time'],
       longitude: map['longitude'],
@@ -75,5 +76,6 @@ class Detail {
 
   String toJson() => json.encode(toMap());
 
-  factory Detail.fromJson(String source) => Detail.fromMap(json.decode(source));
+  factory PresentionDetail.fromJson(String source) =>
+      PresentionDetail.fromMap(json.decode(source));
 }

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:e_presention/screens/profile_page.dart';
 import 'package:e_presention/screens/report_page.dart';
-import 'package:e_presention/screens/scan_page.dart';
+import 'package:e_presention/screens/scanner/scan_page.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -74,7 +74,6 @@ class _HomePageState extends State<HomePage> {
                       child: Consumer<AuthProvider>(
                         builder: (context, value, child) => Row(
                           children: [
-                            /// TODO avatar
                             Hero(
                               tag: 'avatar',
                               child: value.user!.avaPath! == '-' ||
@@ -139,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                                 timeIn = 'Anda Belum Scan';
                               }
                               String timeOut;
-                              if (value.today.isNotEmpty &&
+                              if (value.today.length > 1 &&
                                   value.today[1].nik!.isNotEmpty) {
                                 timeOut = value.today[1].time!;
                               } else {
@@ -156,13 +155,15 @@ class _HomePageState extends State<HomePage> {
                                     time: timeIn,
                                     caption: 'Anda Sudah Presen',
                                     icon: Icons.login,
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                        context,
-                                        ScanPage.routeName,
-                                        arguments: 'masuk',
-                                      );
-                                    },
+                                    onTap: timeIn.contains('Belum')
+                                        ? () {
+                                            Navigator.pushNamed(
+                                              context,
+                                              ScanPage.routeName,
+                                              arguments: 'masuk',
+                                            );
+                                          }
+                                        : null,
                                   ),
                                   MainGridView(
                                     time: timeOut.isEmpty
@@ -170,11 +171,13 @@ class _HomePageState extends State<HomePage> {
                                         : timeOut,
                                     caption: 'tap untuk pulang',
                                     icon: Icons.logout_sharp,
-                                    onTap: () {
-                                      Navigator.pushNamed(
-                                          context, ScanPage.routeName,
-                                          arguments: 'pulang');
-                                    },
+                                    onTap: timeOut.contains('Belum')
+                                        ? () {
+                                            Navigator.pushNamed(
+                                                context, ScanPage.routeName,
+                                                arguments: 'pulang');
+                                          }
+                                        : null,
                                   ),
                                 ],
                               );

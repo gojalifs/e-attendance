@@ -1,8 +1,8 @@
-import 'package:e_presention/data/providers/auth_provider.dart';
-import 'package:e_presention/screens/login/login_page.dart';
-import 'package:e_presention/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'package:e_presention/data/providers/auth_provider.dart';
+import 'package:e_presention/screens/login/login_page.dart';
 
 class ProfilePage extends StatelessWidget {
   static const routeName = '/profile';

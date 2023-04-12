@@ -1,23 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
+
 import 'package:e_presention/env/env.dart';
 import 'package:e_presention/services/sqflite_service.dart';
 
-import 'package:http/http.dart' as http;
-
 import '../data/models/presention.dart';
-import '../data/models/user.dart';
 import '../data/models/today_presention.dart';
+import '../data/models/user.dart';
 
 class ApiService {
   final baseUrl = Env.URL;
+  User user = User();
 
-  Future<User> getUser(String id) async {
-    var endpoint = Uri.parse('$baseUrl/users/getuser.php?id=$id');
-    var data = await http.get(endpoint);
-    var resp = jsonDecode(data.body);
-    return User.fromMap(resp);
+  Future getUser() async {
+    user = await SqfLiteService().getUser();
   }
 
   Future<User> login(String id, String password) async {
@@ -34,7 +32,6 @@ class ApiService {
       if (resp.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(resp.body)['data'];
         data['isLoggedIn'] = 1;
-        print(data);
         User user = User.fromMap(data);
         SqfLiteService().saveUser(user);
 
@@ -56,10 +53,8 @@ class ApiService {
         'Authorization': 'Bearer $token',
       });
       var data = jsonDecode(resp.body);
-      print(data['data']);
       List presList = data['data'];
       var result = presList.map((e) => Presention.fromMap(e)).toList();
-      print(result);
       return result;
     } on FormatException {
       throw 'Bad Response';
@@ -84,13 +79,43 @@ class ApiService {
         body: {'nik': nik},
       );
       var data = jsonDecode(resp.body);
-      print('data $data');
       List result = data['data'];
       return result.map((e) => TodayPresention.fromMap(e)).toList();
     } on FormatException {
       throw 'Bad Response';
     } on SocketException {
       throw 'Error on Network';
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Map<String, dynamic>> uploadPresent(
+      String type, String longitude, String latitude, File file) async {
+    await getUser();
+    var endPoint = Uri.parse('$baseUrl/presen');
+    try {
+      final request = http.MultipartRequest('POST', endPoint)
+        ..fields['nik'] = user.nik!
+        ..fields['jenis'] = type
+        ..fields['longitude'] = longitude
+        ..fields['latitude'] = latitude
+        ..files.add(await http.MultipartFile.fromPath('img', file.path))
+        ..headers['Accept'] = 'application/json'
+        ..headers['Authorization'] = 'Bearer ${user.token}';
+
+      var resp = await request.send();
+      var respBody = await http.Response.fromStream(resp);
+
+      if (respBody.statusCode == 401) {
+        throw 'Unauthenticated';
+      } else if (respBody.statusCode == 422 ||
+          respBody.body.contains('Already')) {
+        throw 'already check in/out';
+      } else {
+        Map<String, dynamic> data = jsonDecode(respBody.body);
+        return data['data'][0];
+      }
     } catch (e) {
       rethrow;
     }
@@ -107,8 +132,6 @@ class ApiService {
           'Authorization': 'Bearer $token',
         },
       );
-      print('${resp.body}');
-      print(' ${resp.statusCode}');
       if (resp.statusCode == 500 || resp.statusCode == 401) {
         throw Exception('unauthorized');
       }
