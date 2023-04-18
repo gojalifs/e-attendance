@@ -5,7 +5,7 @@ import 'package:e_presention/data/models/today_presention.dart';
 import 'package:e_presention/services/api_service.dart';
 
 class PresentProvider with ChangeNotifier {
-  final ApiService apiService = ApiService();
+  static final ApiService apiService = ApiService();
   List<Presention> _presention = [];
   ConnectionState _state = ConnectionState.none;
   List<TodayPresention> _today = [TodayPresention(), TodayPresention()];

@@ -146,8 +146,15 @@ class _ScanPageState extends State<ScanPage> {
                           );
 
                           await scan.sendPresention(type).then(
-                            (value) {
+                            (value) async {
                               Navigator.of(context).pop();
+                              await Provider.of<PresentProvider>(context,
+                                      listen: false)
+                                  .getTodayPresention();
+                              if (!mounted) {
+                                return null;
+                              }
+
                               return Navigator.pushNamedAndRemoveUntil(context,
                                   SuccessPage.routeName, (route) => true);
                             },
