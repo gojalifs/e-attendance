@@ -6,10 +6,10 @@ import 'package:sqflite/sqflite.dart';
 import '../data/models/user.dart';
 
 class SqfLiteService {
-  DBHelper dbHelper = DBHelper();
+  final DBHelper _dbHelper = DBHelper();
 
   Future saveUser(User user) async {
-    final Database db = await dbHelper.initDb();
+    final Database db = await _dbHelper.initDb();
 
     try {
       await db.insert('user', user.toMap());
@@ -18,8 +18,17 @@ class SqfLiteService {
     }
   }
 
+  Future updateUser(User user) async {
+    final Database db = await _dbHelper.initDb();
+    try {
+      await db.update('user', user.toMap());
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<User> getUser() async {
-    final Database db = await dbHelper.initDb();
+    final Database db = await _dbHelper.initDb();
     try {
       var data = await db.rawQuery('SELECT * FROM user');
       return User.fromMap(data.first);
@@ -29,7 +38,7 @@ class SqfLiteService {
   }
 
   Future<bool> checkLoginStatus() async {
-    final Database db = await dbHelper.initDb();
+    final Database db = await _dbHelper.initDb();
 
     try {
       var result = await db.rawQuery('SELECT COUNT(*) FROM user');

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:e_presention/services/sqflite_service.dart';
 import 'package:flutter/material.dart';
 
@@ -29,21 +31,46 @@ class AuthProvider with ChangeNotifier {
 
   Future<bool> checkLoginStatus() async {
     bool status = false;
-    await SqfLiteService().checkLoginStatus().then((value) {
-      status = value;
-    });
+
+    status = await _apiService.checkLoginStatus();
+
     if (status) {
+      await _apiService.getUser();
       _user = await SqfLiteService().getUser();
       notifyListeners();
+    } else {
+      await DBHelper().deleteDb();
     }
     notifyListeners();
     return status;
   }
 
+  /*
+    TODO
+    future development must move this code to user provider
+  */
+  Future updateProfile(String column, String data) async {
+    _connectionState = ConnectionState.active;
+
+    _user = await _apiService.updateProfile(column, data);
+
+    _connectionState = ConnectionState.done;
+    notifyListeners();
+  }
+
+  Future updateAvatar(File img) async {
+    _connectionState = ConnectionState.active;
+    _user = await _apiService.updateAvatar(img);
+    _connectionState = ConnectionState.done;
+    notifyListeners();
+  }
+
   Future logout() async {
+    _connectionState = ConnectionState.active;
     await _apiService.logout(user!.token!);
     await DBHelper().deleteDb();
     _user = User();
+    _connectionState = ConnectionState.done;
     notifyListeners();
   }
 }

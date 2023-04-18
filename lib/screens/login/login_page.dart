@@ -115,7 +115,6 @@ class _LoginPageState extends State<LoginPage> {
                                       (_) async {
                                         await present.getPresention(
                                             auth.user!.nik!, auth.user!.token!);
-
                                         if (!mounted) {
                                           return null;
                                         }

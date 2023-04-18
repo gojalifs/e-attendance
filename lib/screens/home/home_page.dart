@@ -82,17 +82,30 @@ class _HomePageState extends State<HomePage> {
                                       Icons.account_circle_rounded,
                                       size: 75,
                                     )
-                                  : Image.network(value.user!.avaPath!),
+                                  : ClipRRect(
+                                      borderRadius: BorderRadius.circular(75),
+                                      child: Image.network(
+                                        fit: BoxFit.cover,
+                                        'http://192.168.128.22/storage/${value.user!.avaPath!}',
+                                        width: 100,
+                                        height: 100,
+                                      ),
+                                    ),
                             ),
                             const SizedBox(width: 10),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
-                                  'Halo, ${value.user!.nama}',
-                                  style: const TextStyle(
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.bold,
+                                SizedBox(
+                                  width: 300,
+                                  child: Text(
+                                    'Halo, ${value.user!.nama}',
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                    style: const TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                                 const SizedBox(height: 10),
