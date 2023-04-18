@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:e_presention/env/env.dart';
 import 'package:e_presention/services/sqflite_service.dart';
+import 'package:intl/intl.dart';
 
 import '../data/models/presention.dart';
 import '../data/models/today_presention.dart';
@@ -13,6 +14,13 @@ import '../data/models/user.dart';
 class ApiService {
   final _baseUrl = Env.URL;
   User _user = User();
+
+  Map<String, String> setHeader() {
+    return {
+      'Accept': 'application/json',
+      'Authorization': 'Bearer ${_user.token}',
+    };
+  }
 
   Future getUser() async {
     _user = await SqfLiteService().getUser();
@@ -33,7 +41,9 @@ class ApiService {
         Map<String, dynamic> data = jsonDecode(resp.body)['data'];
         data['isLoggedIn'] = 1;
         _user = User.fromMap(data);
+
         SqfLiteService().saveUser(_user);
+        await getUser();
         return _user;
       } else {
         throw 'invalid credential';
@@ -86,26 +96,45 @@ class ApiService {
     }
   }
 
-  Future<List<TodayPresention>> getTodayPresention(
-      String nik, String token) async {
+  Future<List<TodayPresention>> getTodayPresention() async {
+    await getUser();
     var endPoint = Uri.parse('$_baseUrl/daily');
+    String date = DateFormat('y-M-d', 'id-ID').format(DateTime.now());
 
     try {
       var resp = await http.post(
         endPoint,
         headers: {
           'Accept': 'application/json',
-          'Authorization': 'Bearer $token',
+          'Authorization': 'Bearer ${_user.token}',
         },
-        body: {'nik': nik},
+        body: {
+          'nik': _user.nik,
+          'date': date,
+        },
       );
       var data = jsonDecode(resp.body);
+
       List result = data['data'];
       return result.map((e) => TodayPresention.fromMap(e)).toList();
     } on FormatException {
       throw 'Bad Response';
     } on SocketException {
       throw 'Error on Network';
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<int> presentionCount() async {
+    var endPoint = Uri.parse('$_baseUrl/dailycount');
+
+    try {
+      var resp = await http
+          .post(endPoint, headers: setHeader(), body: {'nik': _user.nik});
+      var data = jsonDecode(resp.body);
+      print(data);
+      return data['data'];
     } catch (e) {
       rethrow;
     }

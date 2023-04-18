@@ -59,7 +59,12 @@ class SuccessScanPage extends StatelessWidget {
                         Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
                           child: auth.user?.avaPath != '-'
-                              ? Image.asset(auth.user!.avaPath!)
+                              ? CircleAvatar(
+                                  radius: 100,
+                                  backgroundImage: NetworkImage(
+                                    'http://192.168.128.22/storage/${auth.user!.avaPath!}',
+                                  ),
+                                )
                               : const Icon(
                                   Icons.account_circle_rounded,
                                   size: 100,

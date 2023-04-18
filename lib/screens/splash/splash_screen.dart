@@ -1,6 +1,8 @@
 import 'package:e_presention/data/providers/auth_provider.dart';
+import 'package:e_presention/data/providers/presention_provider.dart';
 import 'package:e_presention/screens/home/home_page.dart';
 import 'package:e_presention/screens/login/login_page.dart';
+import 'package:e_presention/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -15,6 +17,17 @@ class CustomSplashScreen extends StatefulWidget {
 class _CustomSplashScreenState extends State<CustomSplashScreen> {
   Future<bool> initializeProvider(BuildContext context) async {
     return Provider.of<AuthProvider>(context, listen: false).checkLoginStatus();
+  }
+
+  void check() async {
+    await ApiService().checkLoginStatus();
+  }
+
+  @override
+  void initState() {
+    check();
+    Provider.of<PresentProvider>(context, listen: false).presentionCount();
+    super.initState();
   }
 
   @override

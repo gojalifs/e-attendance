@@ -1,3 +1,4 @@
+import 'package:e_presention/data/providers/scan_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -7,6 +8,8 @@ import 'package:provider/provider.dart';
 
 import 'package:e_presention/data/providers/photo_provider.dart';
 import 'package:e_presention/screens/success_upload_page.dart';
+
+import '../../data/providers/presention_provider.dart';
 
 class ScanPage extends StatefulWidget {
   static const routeName = '/scan';
@@ -150,6 +153,11 @@ class _ScanPageState extends State<ScanPage> {
                             },
                           ).onError(
                             (error, stackTrace) {
+                              print(error);
+                              Provider.of<PresentProvider>(context,
+                                          listen: false)
+                                      .state ==
+                                  ConnectionState.done;
                               return MotionToast.error(
                                 description:
                                     const Text('Something Error Happened'),

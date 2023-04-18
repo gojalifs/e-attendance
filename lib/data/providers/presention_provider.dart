@@ -9,10 +9,12 @@ class PresentProvider with ChangeNotifier {
   List<Presention> _presention = [];
   ConnectionState _state = ConnectionState.none;
   List<TodayPresention> _today = [TodayPresention(), TodayPresention()];
+  int _count = 0;
 
   List<Presention> get presention => _presention;
   ConnectionState get state => _state;
   List<TodayPresention> get today => _today;
+  int get count => _count;
 
   Future getPresention(String nik, String token) async {
     _state = ConnectionState.active;
@@ -21,9 +23,17 @@ class PresentProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future getTodayPresention(String nik, String token) async {
+  Future getTodayPresention() async {
     _state = ConnectionState.active;
-    _today = await apiService.getTodayPresention(nik, token);
+    _today = await apiService.getTodayPresention();
+    _state = ConnectionState.done;
+    notifyListeners();
+  }
+
+  Future presentionCount() async {
+    _state = ConnectionState.active;
+    await apiService.getUser();
+    _count = await apiService.presentionCount();
     _state = ConnectionState.done;
     notifyListeners();
   }

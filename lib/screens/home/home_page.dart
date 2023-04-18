@@ -41,10 +41,8 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     ThemeData style = Theme.of(context);
     // Provider.of<AuthProvider>(context, listen: false).checkLoginStatus();
-    Provider.of<PresentProvider>(context, listen: false).getTodayPresention(
-      Provider.of<AuthProvider>(context).user!.nik!,
-      Provider.of<AuthProvider>(context).user!.token!,
-    );
+    Provider.of<PresentProvider>(context, listen: false).getTodayPresention();
+    Provider.of<PresentProvider>(context, listen: false).presentionCount();
     return GestureDetector(
       child: Scaffold(
         floatingActionButton: Consumer2<PresentProvider, AuthProvider>(
@@ -59,8 +57,7 @@ class _HomePageState extends State<HomePage> {
           child: Consumer2<PresentProvider, AuthProvider>(
             builder: (context, present, auth, child) => RefreshIndicator(
               onRefresh: () async {
-                await present.getTodayPresention(
-                    auth.user!.nik!, auth.user!.token!);
+                await present.getTodayPresention();
               },
               child: ListView(
                 children: [
@@ -208,10 +205,13 @@ class _HomePageState extends State<HomePage> {
                             crossAxisCount: 2,
                             childAspectRatio: 2 / 1.5,
                             children: [
-                              const MainGridView(
-                                time: '10 hari',
-                                caption: 'Kehadiran Bulan Ini',
-                                icon: Icons.calendar_today_sharp,
+                              Consumer<PresentProvider>(
+                                builder: (context, value, child) =>
+                                    MainGridView(
+                                  time: '${value.count} Hari',
+                                  caption: 'Kehadiran Bulan Ini',
+                                  icon: Icons.calendar_today_sharp,
+                                ),
                               ),
                               MainGridView(
                                 time: '',
