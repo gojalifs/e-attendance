@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:e_presention/data/models/presention.dart';
 import 'package:e_presention/data/models/today_presention.dart';
 import 'package:e_presention/services/api_service.dart';
+import 'package:intl/intl.dart';
 
 class PresentProvider with ChangeNotifier {
   static final ApiService apiService = ApiService();
@@ -18,14 +19,16 @@ class PresentProvider with ChangeNotifier {
 
   Future getPresention(String nik, String token) async {
     _state = ConnectionState.active;
-    _presention = await apiService.getPresention(nik, token);
+    _presention = await apiService.getPresention();
     _state = ConnectionState.done;
     notifyListeners();
   }
 
-  Future getTodayPresention() async {
+  Future getTodayPresention(DateTime formattedDate) async {
     _state = ConnectionState.active;
-    _today = await apiService.getTodayPresention();
+    String fDate = DateFormat('y-M-d').format(formattedDate);
+    _today = await apiService.getTodayPresention(fDate);
+    // print(_today.first.toMap());
     _state = ConnectionState.done;
     notifyListeners();
   }

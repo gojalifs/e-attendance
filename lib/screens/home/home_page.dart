@@ -3,7 +3,7 @@ import 'package:e_presention/data/providers/presention_provider.dart';
 import 'package:flutter/material.dart';
 
 import 'package:e_presention/screens/profile_page.dart';
-import 'package:e_presention/screens/report_page.dart';
+import 'package:e_presention/screens/reports_page.dart';
 import 'package:e_presention/screens/scanner/scan_page.dart';
 import 'package:provider/provider.dart';
 
@@ -41,7 +41,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     ThemeData style = Theme.of(context);
     // Provider.of<AuthProvider>(context, listen: false).checkLoginStatus();
-    Provider.of<PresentProvider>(context, listen: false).getTodayPresention();
+    Provider.of<PresentProvider>(context, listen: false).getTodayPresention(
+      DateTime.now(),
+    );
     Provider.of<PresentProvider>(context, listen: false).presentionCount();
     return GestureDetector(
       child: Scaffold(
@@ -57,7 +59,7 @@ class _HomePageState extends State<HomePage> {
           child: Consumer2<PresentProvider, AuthProvider>(
             builder: (context, present, auth, child) => RefreshIndicator(
               onRefresh: () async {
-                await present.getTodayPresention();
+                await present.getTodayPresention(DateTime.now());
               },
               child: ListView(
                 children: [

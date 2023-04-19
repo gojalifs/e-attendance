@@ -5,7 +5,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:e_presention/env/env.dart';
 import 'package:e_presention/services/sqflite_service.dart';
-import 'package:intl/intl.dart';
 
 import '../data/models/presention.dart';
 import '../data/models/today_presention.dart';
@@ -35,7 +34,6 @@ class ApiService {
       'nik': id,
       'password': password,
     });
-
     try {
       if (resp.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(resp.body)['data'];
@@ -44,6 +42,7 @@ class ApiService {
 
         SqfLiteService().saveUser(_user);
         await getUser();
+
         return _user;
       } else {
         throw 'invalid credential';
@@ -75,14 +74,14 @@ class ApiService {
     }
   }
 
-  Future<List<Presention>> getPresention(String nik, String token) async {
-    var endPoint = Uri.parse('$_baseUrl/presen/$nik');
+  Future<List<Presention>> getPresention() async {
+    var endPoint = Uri.parse('$_baseUrl/presen/${_user.nik}');
 
     try {
-      var resp = await http.get(endPoint, headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer $token',
-      });
+      var resp = await http.get(
+        endPoint,
+        headers: setHeader(),
+      );
       var data = jsonDecode(resp.body);
       List presList = data['data'];
       var result = presList.map((e) => Presention.fromMap(e)).toList();
@@ -96,10 +95,10 @@ class ApiService {
     }
   }
 
-  Future<List<TodayPresention>> getTodayPresention() async {
+  Future<List<TodayPresention>> getTodayPresention(String? date) async {
     await getUser();
     var endPoint = Uri.parse('$_baseUrl/daily');
-    String date = DateFormat('y-M-d', 'id-ID').format(DateTime.now());
+    // String fDate = DateFormat('y-M-d', 'id-ID').format(date);
 
     try {
       var resp = await http.post(
@@ -133,7 +132,6 @@ class ApiService {
       var resp = await http
           .post(endPoint, headers: setHeader(), body: {'nik': _user.nik});
       var data = jsonDecode(resp.body);
-      print(data);
       return data['data'];
     } catch (e) {
       rethrow;

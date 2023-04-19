@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -109,12 +108,14 @@ class _LoginPageState extends State<LoginPage> {
                                   await prefs.setBool('isLoggedIn', true);
                                   if (formKey.currentState!.validate()) {
                                     await auth
-                                        .login(nikController.text.trim(),
-                                            passController.text.trim())
-                                        .then(
+                                            .login(nikController.text.trim(),
+                                                passController.text.trim())
+                                            .then(
                                       (_) async {
-                                        await present.getPresention(
-                                            auth.user!.nik!, auth.user!.token!);
+                                        // await present.getPresention(
+                                        //     auth.user!.nik!, auth.user!.token!);
+                                        await present
+                                            .getTodayPresention(DateTime.now());
                                         if (!mounted) {
                                           return null;
                                         }
@@ -122,16 +123,19 @@ class _LoginPageState extends State<LoginPage> {
                                             .pushReplacementNamed(
                                                 HomePage.routeName);
                                       },
-                                    ).onError(
-                                      (error, stackTrace) {
-                                        return MotionToast.warning(
-                                          title: const Text('Login Failed'),
-                                          description: Text(
-                                            error.toString(),
-                                          ),
-                                        ).show(context);
-                                      },
-                                    );
+                                    )
+                                        // .onError(
+                                        //   (error, stackTrace) {
+                                        //     return MotionToast.warning(
+                                        //       title: const Text('Login Failed'),
+                                        //       description: Text(
+                                        //         error.toString(),
+                                        //       ),
+                                        //     )
+                                        //     .show(context);
+                                        //   },
+                                        // )
+                                        ;
                                   }
                                 },
                                 child: const Text('LOGIN'),

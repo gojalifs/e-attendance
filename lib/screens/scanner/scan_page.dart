@@ -1,4 +1,3 @@
-import 'package:e_presention/data/providers/scan_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -6,10 +5,9 @@ import 'package:motion_toast/motion_toast.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 
-import 'package:e_presention/data/providers/photo_provider.dart';
-import 'package:e_presention/screens/success_upload_page.dart';
-
+import '../../data/providers/photo_provider.dart';
 import '../../data/providers/presention_provider.dart';
+import '../success_upload_page.dart';
 
 class ScanPage extends StatefulWidget {
   static const routeName = '/scan';
@@ -150,7 +148,7 @@ class _ScanPageState extends State<ScanPage> {
                               Navigator.of(context).pop();
                               await Provider.of<PresentProvider>(context,
                                       listen: false)
-                                  .getTodayPresention();
+                                  .getTodayPresention(DateTime.now());
                               if (!mounted) {
                                 return null;
                               }
@@ -160,7 +158,6 @@ class _ScanPageState extends State<ScanPage> {
                             },
                           ).onError(
                             (error, stackTrace) {
-                              print(error);
                               Provider.of<PresentProvider>(context,
                                           listen: false)
                                       .state ==

@@ -63,10 +63,6 @@ class ProfilePage extends StatelessWidget {
                                 quality: 25,
                               );
                               File? image = File(compressed!.path);
-
-                              /// TODO
-                              /// save to sqlite
-                              /// fix the avatar
                               value.updateAvatar(image);
                             },
                             icon: const Icon(Icons.edit_square),
@@ -271,7 +267,7 @@ class BiodataWidget extends StatelessWidget {
                                         .style!
                                         .copyWith(
                                           backgroundColor:
-                                              MaterialStatePropertyAll(
+                                              const MaterialStatePropertyAll(
                                                   Colors.red),
                                         ),
                                     child: const Text('Batal'),

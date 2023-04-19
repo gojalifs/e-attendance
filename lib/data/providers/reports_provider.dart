@@ -1,7 +1,8 @@
-import 'package:e_presention/data/models/presention.dart';
-import 'package:e_presention/data/models/today_presention.dart';
-import 'package:e_presention/services/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+import '../../services/api_service.dart';
+import '../models/today_presention.dart';
 
 class ReportProvider extends ChangeNotifier {
   static final ApiService apiService = ApiService();
@@ -11,10 +12,10 @@ class ReportProvider extends ChangeNotifier {
   ConnectionState get state => _state;
   List<TodayPresention> get today => _today;
 
-  Future getTodayPresention(String? date) async {
+  Future getTodayPresention(DateTime date) async {
     _state = ConnectionState.active;
-    _today = await apiService.getTodayPresention(date);
-    print('today $_today');
+    String fDate = DateFormat('y-M-d').format(date);
+    _today = await apiService.getTodayPresention(fDate);
     _state = ConnectionState.done;
     notifyListeners();
   }

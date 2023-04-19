@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// TODO delete this
+String tempUrl = 'http://192.168.128.22/storage';
+
 class CustomWidget {
   static Widget divider = const Divider(
     thickness: 2,

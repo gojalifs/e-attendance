@@ -8,7 +8,7 @@ import 'package:e_presention/data/providers/presention_provider.dart';
 import 'package:e_presention/screens/home/home_page.dart';
 import 'package:e_presention/screens/login/login_page.dart';
 import 'package:e_presention/screens/profile_page.dart';
-import 'package:e_presention/screens/report_page.dart';
+import 'package:e_presention/screens/reports_page.dart';
 import 'package:e_presention/screens/scanner/scan_page.dart';
 import 'package:e_presention/screens/splash/splash_screen.dart';
 import 'package:e_presention/screens/success_upload_page.dart';

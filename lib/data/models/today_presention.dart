@@ -6,6 +6,7 @@ class TodayPresention {
   final String? nik;
   final String? type;
   final String? time;
+  final String? imgPath;
 
   TodayPresention({
     this.id = 0,
@@ -13,6 +14,7 @@ class TodayPresention {
     this.nik = '',
     this.type = '',
     this.time = '',
+    this.imgPath,
   });
 
   Map<String, dynamic> toMap() {
@@ -22,6 +24,7 @@ class TodayPresention {
       'nik': nik,
       'type': type,
       'time': time,
+      'imgPath': imgPath,
     };
   }
 
@@ -32,6 +35,7 @@ class TodayPresention {
       nik: map['nik'],
       type: map['type'],
       time: map['time'],
+      imgPath: map['imgPath'],
     );
   }
 
