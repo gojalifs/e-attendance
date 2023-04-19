@@ -31,6 +31,7 @@ class CustomTheme {
     ),
     appBarTheme: const AppBarTheme(
       toolbarHeight: 100,
+      titleTextStyle: TextStyle(fontSize: 30, color: Colors.black),
       backgroundColor: Colors.transparent,
       elevation: 0,
     ),

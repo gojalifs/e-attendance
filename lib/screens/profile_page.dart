@@ -154,6 +154,7 @@ class BiodataWidget extends StatelessWidget {
   final String subtitle;
   final String column;
   final Function()? onPressed;
+  final bool? isProfilePage;
 
   const BiodataWidget({
     Key? key,
@@ -161,6 +162,7 @@ class BiodataWidget extends StatelessWidget {
     required this.subtitle,
     required this.column,
     this.onPressed,
+    this.isProfilePage = true,
   }) : super(key: key);
 
   static final formKey = GlobalKey<FormState>();
@@ -183,10 +185,12 @@ class BiodataWidget extends StatelessWidget {
           ),
           Expanded(
             child: IconButton(
-              icon: title == 'No. ID'
+              icon: title == 'No. ID' || title == 'NIPNS' || !isProfilePage!
                   ? const SizedBox()
                   : const Icon(Icons.edit_square),
-              onPressed: title == 'No. ID'
+              onPressed: title == 'No. ID' ||
+                      title == 'NIPNS' ||
+                      !isProfilePage!
                   ? null
                   : () {
                       final TextEditingController controller =

@@ -1,10 +1,12 @@
 import 'package:e_presention/data/providers/auth_provider.dart';
 import 'package:e_presention/data/providers/presention_provider.dart';
+import 'package:e_presention/screens/exit_permit_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:e_presention/screens/profile_page.dart';
 import 'package:e_presention/screens/reports_page.dart';
 import 'package:e_presention/screens/scanner/scan_page.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,6 +19,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _fabKey = GlobalKey<ExpandableFabState>();
+
   String greeting = '';
   @override
   void initState() {
@@ -40,20 +44,43 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     ThemeData style = Theme.of(context);
-    // Provider.of<AuthProvider>(context, listen: false).checkLoginStatus();
     Provider.of<PresentProvider>(context, listen: false).getTodayPresention(
       DateTime.now(),
     );
     Provider.of<PresentProvider>(context, listen: false).presentionCount();
     return GestureDetector(
       child: Scaffold(
-        floatingActionButton: Consumer2<PresentProvider, AuthProvider>(
-          builder: (context, present, auth, child) =>
-              FloatingActionButton.extended(
-            onPressed: () {},
-            icon: const Icon(Icons.edit_square),
-            label: const Text('Ajukan Izin Keluar'),
-          ),
+        floatingActionButtonLocation: ExpandableFab.location,
+        floatingActionButton: ExpandableFab(
+          key: _fabKey,
+          type: ExpandableFabType.up,
+          distance: 75,
+          child: const Icon(Icons.add_rounded),
+          children: [
+            FloatingActionButton.extended(
+              heroTag: null,
+              onPressed: () {
+                final state = _fabKey.currentState;
+                if (state != null) {
+                  state.toggle();
+                }
+                Navigator.of(context).pushNamed(ExitPermitPage.routeName);
+              },
+              icon: const Icon(Icons.edit_square),
+              label: const Text('Ajukan Izin Keluar'),
+            ),
+            FloatingActionButton.extended(
+              heroTag: null,
+              onPressed: () {
+                final state = _fabKey.currentState;
+                if (state != null) {
+                  state.toggle();
+                }
+              },
+              icon: const Icon(Icons.edit_square),
+              label: const Text('Ajukan Cuti'),
+            ),
+          ],
         ),
         body: SafeArea(
           child: Consumer2<PresentProvider, AuthProvider>(

@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:e_presention/data/models/out_permit.dart';
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:e_presention/env/env.dart';
@@ -14,7 +16,7 @@ class ApiService {
   final _baseUrl = Env.URL;
   User _user = User();
 
-  Map<String, String> setHeader() {
+  Map<String, String> _setHeader() {
     return {
       'Accept': 'application/json',
       'Authorization': 'Bearer ${_user.token}',
@@ -23,6 +25,7 @@ class ApiService {
 
   Future getUser() async {
     _user = await SqfLiteService().getUser();
+    print(_user.toMap());
   }
 
   Future<User> login(String id, String password) async {
@@ -80,7 +83,7 @@ class ApiService {
     try {
       var resp = await http.get(
         endPoint,
-        headers: setHeader(),
+        headers: _setHeader(),
       );
       var data = jsonDecode(resp.body);
       List presList = data['data'];
@@ -130,7 +133,7 @@ class ApiService {
 
     try {
       var resp = await http
-          .post(endPoint, headers: setHeader(), body: {'nik': _user.nik});
+          .post(endPoint, headers: _setHeader(), body: {'nik': _user.nik});
       var data = jsonDecode(resp.body);
       return data['data'];
     } catch (e) {
@@ -217,6 +220,53 @@ class ApiService {
     } catch (e) {
       rethrow;
     }
+  }
+
+  /// IZIN SECTION
+  ///
+
+  Future addPermit(
+    String date,
+    TimeOfDay outTime,
+    TimeOfDay backTime,
+    String reason,
+  ) async {
+    String formattedOutTime = '${outTime.hour}:${outTime.minute}';
+    String formattedbackTime = '${backTime.hour}:${backTime.minute}';
+
+    var endPoint = Uri.parse('$_baseUrl/izink');
+
+    try {
+      var resp = await http.post(endPoint, headers: _setHeader(), body: {
+        'tanggal': date,
+        'user_nik': _user.nik,
+        'alasan': reason,
+        'jam_keluar': formattedOutTime,
+        'jam_kembali': formattedbackTime,
+      });
+
+      var data = jsonDecode(resp.body);
+      var result = data['data'];
+      print(result);
+      return result;
+    } on FormatException {
+      throw 'Bad Response';
+    } on SocketException {
+      throw 'Error on Network';
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<OutPermit>> fetchpermit() async {
+    var endPoint = Uri.parse('$_baseUrl/izink/${_user.nik}');
+
+    var resp = await http.get(endPoint, headers: _setHeader());
+    Map<String, dynamic> data = jsonDecode(resp.body);
+    List list = data['data'];
+    List<OutPermit> result = list.map((e) => OutPermit.fromMap(e)).toList();
+    print(result[0].toMap());
+    return result;
   }
 
   Future logout(String token) async {

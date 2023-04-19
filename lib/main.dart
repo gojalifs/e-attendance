@@ -1,3 +1,5 @@
+import 'package:e_presention/data/providers/exit_permit_provider.dart';
+import 'package:e_presention/screens/exit_permit_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +44,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => PresentProvider()),
         ChangeNotifierProvider(create: (context) => PhotoProvider()),
+        ChangeNotifierProvider(create: (context) => ExitPermitProvider()),
       ],
       child: const MyApp(
           // homeWidget: homeRoute,
@@ -71,6 +74,7 @@ class MyApp extends StatelessWidget {
         SuccessPage.routeName: (context) => const SuccessPage(),
         ProfilePage.routeName: (context) => const ProfilePage(),
         ReportPage.routeName: (context) => const ReportPage(),
+        ExitPermitPage.routeName: (context) => ExitPermitPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == ScanPage.routeName) {
