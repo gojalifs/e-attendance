@@ -1,18 +1,22 @@
-import 'package:e_presention/data/providers/auth_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:e_presention/screens/login/login_page.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:e_presention/utils/custom_theme.dart';
-import 'package:e_presention/screens/home/home_page.dart';
-import 'package:e_presention/screens/profile_page.dart';
-import 'package:e_presention/screens/report_page.dart';
-import 'package:e_presention/screens/scan_page.dart';
-import 'package:e_presention/screens/success_upload_page.dart';
-import 'package:e_presention/screens/upload_image_page.dart';
 import 'package:flutter/material.dart';
-import 'package:scaled_app/scaled_app.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:provider/provider.dart';
+
+import 'package:e_presention/data/providers/auth_provider.dart';
+import 'package:e_presention/data/providers/photo_provider.dart';
+import 'package:e_presention/data/providers/presention_provider.dart';
+import 'package:e_presention/screens/home/home_page.dart';
+import 'package:e_presention/screens/login/login_page.dart';
+import 'package:e_presention/screens/profile_page.dart';
+import 'package:e_presention/screens/reports_page.dart';
+import 'package:e_presention/screens/scanner/scan_page.dart';
+import 'package:e_presention/screens/splash/splash_screen.dart';
+import 'package:e_presention/screens/success_upload_page.dart';
+
+import 'package:e_presention/utils/custom_theme.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('id_ID');
   // runAppScaled(
   //   const MyApp(),
@@ -21,16 +25,37 @@ void main() async {
   //     return deviceSize.width / baseWidth;
   //   },
   // );
+  // Widget homeRoute = const LoginPage();
+  // final SharedPreferences preferences = await SharedPreferences.getInstance();
+  // bool? value = preferences.getBool('isLoggedIn') ?? false;
+
+  // if (!value) {
+  //   homeRoute = const HomePage();
+  // } else {
+  //   homeRoute = const LoginPage();
+  // }
+  // });
+
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => AuthProvider(),
-      child: const MyApp(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider(create: (context) => PresentProvider()),
+        ChangeNotifierProvider(create: (context) => PhotoProvider()),
+      ],
+      child: const MyApp(
+          // homeWidget: homeRoute,
+          ),
     ),
   );
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  // final Widget homeWidget;
+  const MyApp({
+    Key? key,
+    // required this.homeWidget,
+  }) : super(key: key);
 
   // This widget is the root of your application.
   @override
@@ -38,12 +63,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: CustomTheme.themeData,
-      initialRoute: '/',
+      // initialRoute: '/',
+      home: const CustomSplashScreen(),
       routes: {
-        '/': (context) => const LoginPage(),
         LoginPage.routeName: (context) => const LoginPage(),
         HomePage.routeName: (context) => const HomePage(),
-        UploadPage.routeName: (context) => const UploadPage(),
         SuccessPage.routeName: (context) => const SuccessPage(),
         ProfilePage.routeName: (context) => const ProfilePage(),
         ReportPage.routeName: (context) => const ReportPage(),

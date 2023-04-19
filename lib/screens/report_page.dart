@@ -12,10 +12,24 @@ class ReportPage extends StatefulWidget {
 class _ReportPageState extends State<ReportPage> {
   String dropValue = 'Januari';
 
+  List<String> dropDown = [
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember'
+  ];
+
   String period = DateFormat('MMMM', 'ID').format(DateTime.now());
   @override
   void initState() {
-    print(period);
     dropValue = period;
     super.initState();
   }
@@ -44,20 +58,14 @@ class _ReportPageState extends State<ReportPage> {
                 const Text('Pilih Periode'),
                 DropdownButton(
                   style: style.textTheme.bodyMedium,
-                  items: const [
-                    DropdownMenuItem(
-                      value: 'Januari',
-                      child: Text('Januari'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Februari',
-                      child: Text('Februari'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'Maret',
-                      child: Text('Maret'),
-                    ),
-                  ],
+                  items: dropDown
+                      .map(
+                        (e) => DropdownMenuItem(
+                          value: e,
+                          child: Text(e),
+                        ),
+                      )
+                      .toList(),
                   onChanged: (value) {
                     dropValue = value!;
                     setState(() {});

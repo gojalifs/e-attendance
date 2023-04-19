@@ -1,8 +1,10 @@
-import 'package:e_presention/data/providers/auth_provider.dart';
-import 'package:e_presention/screens/home/home_page.dart';
-import 'package:e_presention/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:e_presention/data/providers/auth_provider.dart';
+import 'package:e_presention/data/providers/presention_provider.dart';
+import 'package:e_presention/screens/home/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/login';
@@ -45,6 +47,8 @@ class _LoginPageState extends State<LoginPage> {
                         height: 60,
                         child: TextFormField(
                           controller: nikController,
+                          textInputAction: TextInputAction.next,
+                          keyboardType: TextInputType.number,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Tidak boleh kosong';
@@ -62,6 +66,10 @@ class _LoginPageState extends State<LoginPage> {
                         height: 60,
                         child: TextFormField(
                           controller: passController,
+                          textInputAction: TextInputAction.go,
+                          onFieldSubmitted: (value) {
+                            FocusScope.of(context).unfocus();
+                          },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Tidak boleh kosong';
@@ -88,21 +96,55 @@ class _LoginPageState extends State<LoginPage> {
                       SizedBox(
                         width: double.infinity,
                         height: 60,
-                        child: Consumer<AuthProvider>(
-                          builder: (context, value, child) => ElevatedButton(
-                            onPressed: () async {
-                              FocusScope.of(context).unfocus();
-                              if (formKey.currentState!.validate()) {
-                                await value
-                                    .login(nikController.text.trim(),
-                                        passController.text.trim())
-                                    .then((_) => Navigator.of(context)
-                                        .pushReplacementNamed(
-                                            HomePage.routeName));
-                              }
-                            },
-                            child: const Text('LOGIN'),
-                          ),
+                        child: Consumer2<AuthProvider, PresentProvider>(
+                          builder: (context, auth, present, child) {
+                            if (auth.connectionState !=
+                                ConnectionState.active) {
+                              return ElevatedButton(
+                                onPressed: () async {
+                                  FocusScope.of(context).unfocus();
+                                  final SharedPreferences prefs =
+                                      await SharedPreferences.getInstance();
+                                  await prefs.setBool('isLoggedIn', true);
+                                  if (formKey.currentState!.validate()) {
+                                    await auth
+                                            .login(nikController.text.trim(),
+                                                passController.text.trim())
+                                            .then(
+                                      (_) async {
+                                        // await present.getPresention(
+                                        //     auth.user!.nik!, auth.user!.token!);
+                                        await present
+                                            .getTodayPresention(DateTime.now());
+                                        if (!mounted) {
+                                          return null;
+                                        }
+                                        return Navigator.of(context)
+                                            .pushReplacementNamed(
+                                                HomePage.routeName);
+                                      },
+                                    )
+                                        // .onError(
+                                        //   (error, stackTrace) {
+                                        //     return MotionToast.warning(
+                                        //       title: const Text('Login Failed'),
+                                        //       description: Text(
+                                        //         error.toString(),
+                                        //       ),
+                                        //     )
+                                        //     .show(context);
+                                        //   },
+                                        // )
+                                        ;
+                                  }
+                                },
+                                child: const Text('LOGIN'),
+                              );
+                            } else {
+                              return const Center(
+                                  child: CircularProgressIndicator.adaptive());
+                            }
+                          },
                         ),
                       ),
                     ],
