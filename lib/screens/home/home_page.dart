@@ -1,6 +1,7 @@
 import 'package:e_presention/data/providers/auth_provider.dart';
 import 'package:e_presention/data/providers/presention_provider.dart';
 import 'package:e_presention/screens/exit_permit_page.dart';
+import 'package:e_presention/screens/leaves/leave_page.dart';
 import 'package:flutter/material.dart';
 
 import 'package:e_presention/screens/profile_page.dart';
@@ -76,9 +77,10 @@ class _HomePageState extends State<HomePage> {
                 if (state != null) {
                   state.toggle();
                 }
+                Navigator.of(context).pushNamed(LeavePage.routeName);
               },
               icon: const Icon(Icons.edit_square),
-              label: const Text('Ajukan Cuti'),
+              label: const Text('Ajukan Cuti, Izin dan Ketidakhadiran'),
             ),
           ],
         ),

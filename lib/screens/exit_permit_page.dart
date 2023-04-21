@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 
 import '../data/providers/exit_permit_provider.dart';
 import '../utils/common_widget.dart';
-import 'profile_page.dart';
 
 class ExitPermitPage extends StatefulWidget {
   static String routeName = '/exit_permit';
@@ -17,6 +16,7 @@ class ExitPermitPage extends StatefulWidget {
 }
 
 class _ExitPermitPageState extends State<ExitPermitPage> {
+  final formKey = GlobalKey<FormState>();
   TextEditingController reasonController = TextEditingController();
   DateTime date = DateTime.now();
   TimeOfDay outTime = TimeOfDay.now();
@@ -149,17 +149,26 @@ class _ExitPermitPageState extends State<ExitPermitPage> {
                             const SizedBox(
                               height: 20,
                             ),
-                            TextFormField(
-                              controller: reasonController,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(10),
+                            Form(
+                              key: formKey,
+                              child: TextFormField(
+                                controller: reasonController,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Tidak boleh kosong';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  labelText: 'Alasan',
+                                  alignLabelWithHint: true,
                                 ),
-                                labelText: 'Alasan',
-                                alignLabelWithHint: true,
+                                maxLines: 5,
+                                style: const TextStyle(fontSize: 17),
                               ),
-                              maxLines: 5,
-                              style: const TextStyle(fontSize: 17),
                             ),
                             const SizedBox(
                               height: 20,
@@ -169,24 +178,26 @@ class _ExitPermitPageState extends State<ExitPermitPage> {
                               children: [
                                 ElevatedButton(
                                   onPressed: () async {
-                                    await exit
-                                        .uploadCreatePermit(
-                                      date,
-                                      outTime,
-                                      backTime,
-                                      reasonController.text,
-                                    )
-                                        .then(
-                                      (value) {
-                                        MotionToast.success(
-                                          description: const Text(
-                                              'Sukses mengajukan izin keluar'),
-                                        ).show(context);
-                                        box = !box;
-                                        setState(() {});
-                                      },
-                                    );
-                                    await exit.fetchPermit();
+                                    if (formKey.currentState!.validate()) {
+                                      await exit
+                                          .uploadCreatePermit(
+                                        date,
+                                        outTime,
+                                        backTime,
+                                        reasonController.text,
+                                      )
+                                          .then(
+                                        (value) {
+                                          MotionToast.success(
+                                            description: const Text(
+                                                'Sukses mengajukan izin keluar'),
+                                          ).show(context);
+                                          box = !box;
+                                          setState(() {});
+                                        },
+                                      );
+                                      await exit.fetchPermit();
+                                    }
                                   },
                                   child: const Text('Ajukan'),
                                 ),
@@ -197,7 +208,10 @@ class _ExitPermitPageState extends State<ExitPermitPage> {
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.red,
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    box = !box;
+                                    setState(() {});
+                                  },
                                   child: const Text('Batal'),
                                 ),
                               ],

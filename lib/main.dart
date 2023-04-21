@@ -1,21 +1,22 @@
-import 'package:e_presention/data/providers/exit_permit_provider.dart';
-import 'package:e_presention/screens/exit_permit_page.dart';
+import 'package:e_presention/data/providers/leave_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 
-import 'package:e_presention/data/providers/auth_provider.dart';
-import 'package:e_presention/data/providers/photo_provider.dart';
-import 'package:e_presention/data/providers/presention_provider.dart';
-import 'package:e_presention/screens/home/home_page.dart';
-import 'package:e_presention/screens/login/login_page.dart';
-import 'package:e_presention/screens/profile_page.dart';
-import 'package:e_presention/screens/reports_page.dart';
-import 'package:e_presention/screens/scanner/scan_page.dart';
-import 'package:e_presention/screens/splash/splash_screen.dart';
-import 'package:e_presention/screens/success_upload_page.dart';
-
-import 'package:e_presention/utils/custom_theme.dart';
+import 'data/providers/auth_provider.dart';
+import 'data/providers/exit_permit_provider.dart';
+import 'data/providers/photo_provider.dart';
+import 'data/providers/presention_provider.dart';
+import 'screens/exit_permit_page.dart';
+import 'screens/home/home_page.dart';
+import 'screens/leaves/leave_page.dart';
+import 'screens/login/login_page.dart';
+import 'screens/profile_page.dart';
+import 'screens/reports_page.dart';
+import 'screens/scanner/scan_page.dart';
+import 'screens/splash/splash_screen.dart';
+import 'screens/success_upload_page.dart';
+import 'utils/custom_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,6 +46,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => PresentProvider()),
         ChangeNotifierProvider(create: (context) => PhotoProvider()),
         ChangeNotifierProvider(create: (context) => ExitPermitProvider()),
+        ChangeNotifierProvider(create: (context) => LeaveProvider()),
       ],
       child: const MyApp(
           // homeWidget: homeRoute,
@@ -74,7 +76,8 @@ class MyApp extends StatelessWidget {
         SuccessPage.routeName: (context) => const SuccessPage(),
         ProfilePage.routeName: (context) => const ProfilePage(),
         ReportPage.routeName: (context) => const ReportPage(),
-        ExitPermitPage.routeName: (context) => ExitPermitPage(),
+        ExitPermitPage.routeName: (context) => const ExitPermitPage(),
+        LeavePage.routeName: (context) => const LeavePage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == ScanPage.routeName) {

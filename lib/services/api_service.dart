@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:e_presention/data/models/out_permit.dart';
+import 'package:e_presention/data/models/paid_leave.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:e_presention/env/env.dart';
 import 'package:e_presention/services/sqflite_service.dart';
+import 'package:intl/intl.dart';
 
 import '../data/models/presention.dart';
 import '../data/models/today_presention.dart';
@@ -25,7 +27,6 @@ class ApiService {
 
   Future getUser() async {
     _user = await SqfLiteService().getUser();
-    print(_user.toMap());
   }
 
   Future<User> login(String id, String password) async {
@@ -247,7 +248,6 @@ class ApiService {
 
       var data = jsonDecode(resp.body);
       var result = data['data'];
-      print(result);
       return result;
     } on FormatException {
       throw 'Bad Response';
@@ -265,7 +265,57 @@ class ApiService {
     Map<String, dynamic> data = jsonDecode(resp.body);
     List list = data['data'];
     List<OutPermit> result = list.map((e) => OutPermit.fromMap(e)).toList();
-    print(result[0].toMap());
+    return result;
+  }
+
+  /* 
+    LEAVES SECTION
+
+  */
+
+  Future addLeave(
+    DateTime date,
+    DateTime? endDate,
+    bool isPaidLeave,
+    String reason,
+  ) async {
+    String formattedDate = DateFormat('y-M-d').format(date);
+    String formattedEndDate = '';
+    if (endDate != null) {
+      formattedEndDate = DateFormat('y-M-d').format(endDate);
+    } else {
+      formattedEndDate = formattedDate;
+    }
+
+    var endPoint = Uri.parse('$_baseUrl/absen');
+
+    try {
+      var resp = await http.post(endPoint, headers: _setHeader(), body: {
+        'nik': _user.nik,
+        'tanggal': formattedDate,
+        'tanggal_selesai': formattedEndDate,
+        'alasan': reason,
+        'potong_cuti': isPaidLeave ? 'ya' : 'tidak'
+      });
+      var data = jsonDecode(resp.body);
+      var result = data['data'];
+      return result;
+    } on FormatException {
+      throw 'Bad Response';
+    } on SocketException {
+      throw 'Error on Network';
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<List<PaidLeave>> fetchLeave() async {
+    var endPoint = Uri.parse('$_baseUrl/absen/${_user.nik}');
+
+    var resp = await http.get(endPoint, headers: _setHeader());
+    Map<String, dynamic> data = jsonDecode(resp.body);
+    List list = data['data'];
+    List<PaidLeave> result = list.map((e) => PaidLeave.fromMap(e)).toList();
     return result;
   }
 
