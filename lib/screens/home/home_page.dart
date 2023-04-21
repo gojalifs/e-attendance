@@ -1,14 +1,15 @@
+import 'package:e_presention/screens/revision/revision_page.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
+import 'package:provider/provider.dart';
+
 import 'package:e_presention/data/providers/auth_provider.dart';
 import 'package:e_presention/data/providers/presention_provider.dart';
 import 'package:e_presention/screens/exit_permit_page.dart';
 import 'package:e_presention/screens/leaves/leave_page.dart';
-import 'package:flutter/material.dart';
-
 import 'package:e_presention/screens/profile_page.dart';
 import 'package:e_presention/screens/reports_page.dart';
 import 'package:e_presention/screens/scanner/scan_page.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
-import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/home';
@@ -224,12 +225,13 @@ class _HomePageState extends State<HomePage> {
                               );
                             },
                           ),
-                          const SizedBox(height: 20),
-                          Text(
-                            'Laporan Bulan Ini',
-                            style: style.textTheme.titleMedium,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Text(
+                              'Laporan Bulan Ini',
+                              style: style.textTheme.titleMedium,
+                            ),
                           ),
-                          const SizedBox(height: 20),
                           GridView.count(
                             primary: false,
                             shrinkWrap: true,
@@ -258,6 +260,47 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ],
                           ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 20),
+                            child: Text(
+                              'Ajukan Sesuatu',
+                              style: style.textTheme.titleMedium,
+                            ),
+                          ),
+                          GridView.count(
+                            primary: false,
+                            shrinkWrap: true,
+                            crossAxisCount: 3,
+                            children: [
+                              MainGridView(
+                                time: 'Ajukan Izin Keluar',
+                                caption: '',
+                                color: Color.fromRGBO(36, 219, 122, 1),
+                                onTap: () {
+                                  Navigator.of(context)
+                                      .pushNamed(ExitPermitPage.routeName);
+                                },
+                              ),
+                              MainGridView(
+                                time: 'Ajukan Cuti, Izin Tidak Masuk',
+                                caption: '',
+                                color: Color.fromRGBO(36, 219, 122, 1),
+                                onTap: () {
+                                  Navigator.of(context)
+                                      .pushNamed(LeavePage.routeName);
+                                },
+                              ),
+                              MainGridView(
+                                time: 'Ajukan Revisi Absen',
+                                caption: '',
+                                color: Color.fromRGBO(36, 219, 122, 1),
+                                onTap: () {
+                                  Navigator.of(context)
+                                      .pushNamed(RevisionPage.routeName);
+                                },
+                              ),
+                            ],
+                          )
                         ],
                       ),
                     ),
@@ -275,14 +318,16 @@ class _HomePageState extends State<HomePage> {
 class MainGridView extends StatelessWidget {
   final String time;
   final String caption;
-  final IconData icon;
+  final IconData? icon;
+  final Color? color;
   final Function()? onTap;
 
   const MainGridView({
     Key? key,
     required this.time,
     required this.caption,
-    required this.icon,
+    this.icon,
+    this.color,
     this.onTap,
   }) : super(key: key);
 
@@ -293,9 +338,10 @@ class MainGridView extends StatelessWidget {
       onTap: onTap,
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        color: time.contains(RegExp(r'[0-9]'))
-            ? const Color.fromRGBO(36, 219, 122, 1)
-            : Colors.red,
+        color: color ??
+            (time.contains(RegExp(r'[0-9]'))
+                ? const Color.fromRGBO(36, 219, 122, 1)
+                : Colors.red),
         child: Padding(
           padding: const EdgeInsets.all(10),
           child: Stack(
@@ -319,7 +365,7 @@ class MainGridView extends StatelessWidget {
                         : style.textTheme.titleSmall
                             ?.copyWith(color: Colors.white),
                     overflow: TextOverflow.ellipsis,
-                    maxLines: 2,
+                    maxLines: 4,
                     textAlign: TextAlign.center,
                   ),
                 ),

@@ -319,6 +319,25 @@ class ApiService {
     return result;
   }
 
+  Future presentionRevise(
+    String date,
+    String time,
+    String revised,
+    String reason,
+  ) async {
+    var endPoint = Uri.parse('$_baseUrl/revisi');
+
+    var resp = await http.post(endPoint, headers: _setHeader(), body: {
+      'user_nik': _user.nik,
+      'tanggal': date,
+      'jam': time,
+      'direvisi': revised,
+      'alasan': reason,
+    });
+
+    print(jsonDecode(resp.body));
+  }
+
   Future logout(String token) async {
     var endpoint = Uri.parse('$_baseUrl/logout');
 

@@ -1,4 +1,6 @@
 import 'package:e_presention/data/providers/leave_provider.dart';
+import 'package:e_presention/data/providers/revise_provider.dart';
+import 'package:e_presention/screens/revision/revision_page.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
@@ -47,6 +49,7 @@ void main() async {
         ChangeNotifierProvider(create: (context) => PhotoProvider()),
         ChangeNotifierProvider(create: (context) => ExitPermitProvider()),
         ChangeNotifierProvider(create: (context) => LeaveProvider()),
+        ChangeNotifierProvider(create: (context) => ReviseProvider()),
       ],
       child: const MyApp(
           // homeWidget: homeRoute,
@@ -78,6 +81,7 @@ class MyApp extends StatelessWidget {
         ReportPage.routeName: (context) => const ReportPage(),
         ExitPermitPage.routeName: (context) => const ExitPermitPage(),
         LeavePage.routeName: (context) => const LeavePage(),
+        RevisionPage.routeName: (context) => const RevisionPage(),
       },
       onGenerateRoute: (settings) {
         if (settings.name == ScanPage.routeName) {
