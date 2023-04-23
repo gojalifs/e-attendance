@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  'Selamat $greeting ${MediaQuery.of(context).size.width}',
+                                  'Selamat $greeting',
                                   style: style.textTheme.bodyMedium
                                       ?.copyWith(color: Colors.black54),
                                 ),
