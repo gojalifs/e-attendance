@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'package:e_presention/data/providers/auth_provider.dart';
-import 'package:e_presention/data/providers/presention_provider.dart';
-import 'package:e_presention/screens/home/home_page.dart';
+import '../../data/providers/auth_provider.dart';
+import '../../data/providers/presention_provider.dart';
+import '../home/home_page.dart';
 
 class LoginPage extends StatefulWidget {
   static const routeName = '/login';
@@ -103,9 +101,6 @@ class _LoginPageState extends State<LoginPage> {
                               return ElevatedButton(
                                 onPressed: () async {
                                   FocusScope.of(context).unfocus();
-                                  final SharedPreferences prefs =
-                                      await SharedPreferences.getInstance();
-                                  await prefs.setBool('isLoggedIn', true);
                                   if (formKey.currentState!.validate()) {
                                     await auth
                                             .login(nikController.text.trim(),

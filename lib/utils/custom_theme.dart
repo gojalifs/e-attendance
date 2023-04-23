@@ -6,9 +6,9 @@ class CustomTheme {
     textTheme: const TextTheme(
       headlineLarge: TextStyle(fontSize: 50),
       bodyMedium: TextStyle(fontSize: 18, color: Colors.black87),
-      titleLarge: TextStyle(fontSize: 40),
-      titleMedium: TextStyle(fontSize: 30),
-      titleSmall: TextStyle(fontSize: 20),
+      titleLarge: TextStyle(fontSize: 33),
+      titleMedium: TextStyle(fontSize: 25),
+      titleSmall: TextStyle(fontSize: 17),
     ),
     inputDecorationTheme: InputDecorationTheme(
       border: OutlineInputBorder(

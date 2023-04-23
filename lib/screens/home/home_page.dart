@@ -21,8 +21,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _fabKey = GlobalKey<ExpandableFabState>();
-
   String greeting = '';
   @override
   void initState() {
@@ -53,38 +51,6 @@ class _HomePageState extends State<HomePage> {
     return GestureDetector(
       child: Scaffold(
         floatingActionButtonLocation: ExpandableFab.location,
-        floatingActionButton: ExpandableFab(
-          key: _fabKey,
-          type: ExpandableFabType.up,
-          distance: 75,
-          child: const Icon(Icons.add_rounded),
-          children: [
-            FloatingActionButton.extended(
-              heroTag: null,
-              onPressed: () {
-                final state = _fabKey.currentState;
-                if (state != null) {
-                  state.toggle();
-                }
-                Navigator.of(context).pushNamed(ExitPermitPage.routeName);
-              },
-              icon: const Icon(Icons.edit_square),
-              label: const Text('Ajukan Izin Keluar'),
-            ),
-            FloatingActionButton.extended(
-              heroTag: null,
-              onPressed: () {
-                final state = _fabKey.currentState;
-                if (state != null) {
-                  state.toggle();
-                }
-                Navigator.of(context).pushNamed(LeavePage.routeName);
-              },
-              icon: const Icon(Icons.edit_square),
-              label: const Text('Ajukan Cuti, Izin dan Ketidakhadiran'),
-            ),
-          ],
-        ),
         body: SafeArea(
           child: Consumer2<PresentProvider, AuthProvider>(
             builder: (context, present, auth, child) => RefreshIndicator(
@@ -139,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
-                                  'Selamat $greeting',
+                                  'Selamat $greeting ${MediaQuery.of(context).size.width}',
                                   style: style.textTheme.bodyMedium
                                       ?.copyWith(color: Colors.black54),
                                 ),
@@ -195,7 +161,9 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   MainGridView(
                                     time: timeIn,
-                                    caption: 'Anda Sudah Presen',
+                                    caption: timeIn.contains('Belum')
+                                        ? 'Tap untuk masuk'
+                                        : 'Anda Sudah Presen',
                                     icon: Icons.login,
                                     onTap: timeIn.contains('Belum')
                                         ? () {
@@ -211,7 +179,9 @@ class _HomePageState extends State<HomePage> {
                                     time: timeOut.isEmpty
                                         ? 'belum scan pulang'
                                         : timeOut,
-                                    caption: 'tap untuk pulang',
+                                    caption: timeIn.contains('Belum')
+                                        ? 'Tap untuk pulang'
+                                        : 'Anda Sudah Presen',
                                     icon: Icons.logout_sharp,
                                     onTap: timeOut.contains('Belum')
                                         ? () {
@@ -251,6 +221,7 @@ class _HomePageState extends State<HomePage> {
                                 caption:
                                     'Tap Untuk Laporan Kehadiran Lebih Lengkap',
                                 icon: Icons.assignment_sharp,
+                                color: style.colorScheme.secondary,
                                 onTap: () {
                                   Navigator.pushNamed(
                                     context,
@@ -275,7 +246,7 @@ class _HomePageState extends State<HomePage> {
                               MainGridView(
                                 time: 'Ajukan Izin Keluar',
                                 caption: '',
-                                color: Color.fromRGBO(36, 219, 122, 1),
+                                color: const Color.fromRGBO(36, 219, 122, 1),
                                 onTap: () {
                                   Navigator.of(context)
                                       .pushNamed(ExitPermitPage.routeName);
@@ -284,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                               MainGridView(
                                 time: 'Ajukan Cuti, Izin Tidak Masuk',
                                 caption: '',
-                                color: Color.fromRGBO(36, 219, 122, 1),
+                                color: const Color.fromRGBO(36, 219, 122, 1),
                                 onTap: () {
                                   Navigator.of(context)
                                       .pushNamed(LeavePage.routeName);
@@ -293,7 +264,7 @@ class _HomePageState extends State<HomePage> {
                               MainGridView(
                                 time: 'Ajukan Revisi Absen',
                                 caption: '',
-                                color: Color.fromRGBO(36, 219, 122, 1),
+                                color: const Color.fromRGBO(36, 219, 122, 1),
                                 onTap: () {
                                   Navigator.of(context)
                                       .pushNamed(RevisionPage.routeName);

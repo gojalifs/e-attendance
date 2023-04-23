@@ -1,45 +1,39 @@
-import 'package:e_presention/data/providers/leave_provider.dart';
-import 'package:e_presention/data/providers/revise_provider.dart';
-import 'package:e_presention/screens/revision/revision_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:scaled_app/scaled_app.dart';
 
 import 'data/providers/auth_provider.dart';
 import 'data/providers/exit_permit_provider.dart';
+import 'data/providers/leave_provider.dart';
 import 'data/providers/photo_provider.dart';
 import 'data/providers/presention_provider.dart';
+import 'data/providers/revise_provider.dart';
 import 'screens/exit_permit_page.dart';
 import 'screens/home/home_page.dart';
 import 'screens/leaves/leave_page.dart';
 import 'screens/login/login_page.dart';
 import 'screens/profile_page.dart';
 import 'screens/reports_page.dart';
+import 'screens/revision/revision_page.dart';
 import 'screens/scanner/scan_page.dart';
 import 'screens/splash/splash_screen.dart';
 import 'screens/success_upload_page.dart';
 import 'utils/custom_theme.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  ScaledWidgetsFlutterBinding.ensureInitialized(
+    scaleFactor: (deviceSize) {
+      // screen width used in your UI design
+      /// TODO add screen orientation check for responsive layout
+      const double widthOfDesign = 449;
+      return deviceSize.width / widthOfDesign;
+    },
+  );
+  SystemChrome.setPreferredOrientations(
+      [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await initializeDateFormatting('id_ID');
-  // runAppScaled(
-  //   const MyApp(),
-  //   scaleFactor: (deviceSize) {
-  //     const double baseWidth = 449;
-  //     return deviceSize.width / baseWidth;
-  //   },
-  // );
-  // Widget homeRoute = const LoginPage();
-  // final SharedPreferences preferences = await SharedPreferences.getInstance();
-  // bool? value = preferences.getBool('isLoggedIn') ?? false;
-
-  // if (!value) {
-  //   homeRoute = const HomePage();
-  // } else {
-  //   homeRoute = const LoginPage();
-  // }
-  // });
 
   runApp(
     MultiProvider(
@@ -71,7 +65,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: CustomTheme.themeData,
-      // initialRoute: '/',
       home: const CustomSplashScreen(),
       routes: {
         LoginPage.routeName: (context) => const LoginPage(),
