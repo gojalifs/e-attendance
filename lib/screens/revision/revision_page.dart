@@ -255,11 +255,11 @@ class _RevisionPageState extends State<RevisionPage> {
                                     description:
                                         const Text('Sukses mengajukan revisi'),
                                   ).show(context),
-                                );
-                            // .onError((error, stackTrace) =>
-                            //     MotionToast.error(
-                            //       description: Text('Terjadi error $error'),
-                            //     ).show(context));
+                                )
+                                .onError((error, stackTrace) =>
+                                    MotionToast.error(
+                                      description: Text('Terjadi error $error'),
+                                    ).show(context));
                           }
                         },
                   child: value.state == ConnectionState.active
@@ -272,6 +272,51 @@ class _RevisionPageState extends State<RevisionPage> {
                       : const Text('Submit'),
                 ),
               ),
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: CustomWidget.divider,
+              ),
+              Consumer<ReviseProvider>(
+                builder: (context, value, child) {
+                  return SingleChildScrollView(
+                    primary: false,
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      columns: const [
+                        DataColumn(label: Text('')),
+                        DataColumn(label: Text('ID')),
+                        DataColumn(label: Text('Tanggal')),
+                        DataColumn(label: Text('Jam')),
+                        DataColumn(label: Text('Yang Direvisi')),
+                        DataColumn(label: Text('Alasan')),
+                        DataColumn(label: Text('Status')),
+                      ],
+                      rows: value.revisi.map(
+                        (e) {
+                          String status = e.isApproved == 0
+                              ? 'Belum Disetujui'
+                              : e.isApproved == 1
+                                  ? 'Disetujui'
+                                  : 'Ditolak';
+                          return DataRow(cells: [
+                            DataCell(Icon(
+                              Icons.done_all_rounded,
+                              color:
+                                  e.isApproved == 1 ? Colors.green : Colors.red,
+                            )),
+                            DataCell(Text('${e.id!}')),
+                            DataCell(Text(e.date!)),
+                            DataCell(Text(e.time ?? '-')),
+                            DataCell(Text(e.revised!)),
+                            DataCell(Text(e.reason!)),
+                            DataCell(Text(status)),
+                          ]);
+                        },
+                      ).toList(),
+                    ),
+                  );
+                },
+              )
             ],
           ),
         ),
