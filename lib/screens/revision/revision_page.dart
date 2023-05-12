@@ -27,6 +27,12 @@ class _RevisionPageState extends State<RevisionPage> {
   DateTime date = DateTime.now();
   TimeOfDay time = TimeOfDay.now();
 
+  @override
+  void initState() {
+    Provider.of<ReviseProvider>(context, listen: false).fetchRevision();
+    super.initState();
+  }
+
   _RevisionGroup revision = _RevisionGroup.masuk;
   @override
   Widget build(BuildContext context) {
@@ -249,11 +255,11 @@ class _RevisionPageState extends State<RevisionPage> {
                                     description:
                                         const Text('Sukses mengajukan revisi'),
                                   ).show(context),
-                                )
-                                .onError((error, stackTrace) =>
-                                    MotionToast.error(
-                                      description: const Text('Terjadi error'),
-                                    ).show(context));
+                                );
+                            // .onError((error, stackTrace) =>
+                            //     MotionToast.error(
+                            //       description: Text('Terjadi error $error'),
+                            //     ).show(context));
                           }
                         },
                   child: value.state == ConnectionState.active

@@ -20,7 +20,11 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
   }
 
   void check() async {
-    await ApiService().checkLoginStatus();
+    try {
+      await ApiService().checkLoginStatus();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$e')));
+    }
   }
 
   @override
@@ -37,10 +41,10 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            const Icon(
-              Icons.home,
-              size: 100,
-            ),
+            SizedBox(
+                width: 100,
+                height: 100,
+                child: Image.asset('assets/images/logo-smp.png')),
             FutureBuilder(
               future: initializeProvider(context),
               builder: (context, snapshot) {

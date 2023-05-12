@@ -7,12 +7,14 @@ import 'package:provider/provider.dart';
 
 import '../data/models/user.dart';
 import '../data/providers/auth_provider.dart';
+import '../env/env.dart';
 import '../utils/common_widget.dart';
 import 'login/login_page.dart';
 
 class ProfilePage extends StatelessWidget {
+  final String baseUrl = Env.url.replaceAll(RegExp(r'api'), '');
   static const routeName = '/profile';
-  const ProfilePage({super.key});
+  ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +40,7 @@ class ProfilePage extends StatelessWidget {
                             radius: 100,
                             backgroundImage: user.avaPath! != '-'
                                 ? NetworkImage(
-                                    'http://192.168.128.22/storage/${user.avaPath!}')
+                                    '${baseUrl}storage/${user.avaPath!}')
                                 : const AssetImage('assets/images/user.jpeg')
                                     as ImageProvider,
                           );

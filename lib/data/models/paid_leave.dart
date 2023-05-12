@@ -7,6 +7,8 @@ class PaidLeave {
   final String? endDate;
   final String? alasan;
   final String? potongCuti;
+  final int? status;
+
   PaidLeave({
     this.id,
     this.nik,
@@ -14,6 +16,7 @@ class PaidLeave {
     this.endDate,
     this.alasan,
     this.potongCuti,
+    this.status,
   });
 
   Map<String, dynamic> toMap() {
@@ -23,7 +26,8 @@ class PaidLeave {
       'date': date,
       'endDate': endDate,
       'alasan': alasan,
-      'potong_cuti': potongCuti,
+      'potongCuti': potongCuti,
+      'status': status,
     };
   }
 
@@ -34,7 +38,8 @@ class PaidLeave {
       date: map['date'],
       endDate: map['endDate'],
       alasan: map['alasan'],
-      potongCuti: map['potong_cuti'],
+      potongCuti: map['potongCuti'],
+      status: map['status']?.toInt(),
     );
   }
 

@@ -9,6 +9,8 @@ import 'package:e_presention/data/models/today_presention.dart';
 import 'package:e_presention/data/providers/presention_provider.dart';
 import 'package:e_presention/utils/common_widget.dart';
 
+import '../env/env.dart';
+
 class ReportPage extends StatefulWidget {
   static const routeName = '/report';
   const ReportPage({super.key});
@@ -30,7 +32,7 @@ class _ReportPageState extends State<ReportPage> {
     focusedDate = now;
     cancelableFuture = CancelableOperation.fromFuture(
       Provider.of<PresentProvider>(context, listen: false)
-          .getTodayPresention(focusedDate),
+          .getTodayReportPresention(focusedDate),
       onCancel: () => debugPrint('cancelled'),
     );
     getPresention();
@@ -46,7 +48,7 @@ class _ReportPageState extends State<ReportPage> {
 
     // cancelableFuture = CancelableOperation.fromFuture(
     await Provider.of<PresentProvider>(context, listen: false)
-        .getTodayPresention(focusedDate);
+        .getTodayReportPresention(focusedDate);
     // ,
     // onCancel: () => print('cancelled'),
     // );
@@ -103,7 +105,7 @@ class _ReportPageState extends State<ReportPage> {
             child: Card(
               child: Consumer<PresentProvider>(
                 builder: (context, value, child) {
-                  List<TodayPresention> daily = value.today;
+                  List<TodayPresention> daily = value.todayReports;
                   if (value.state == ConnectionState.done) {
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -160,7 +162,7 @@ class _ReportPageState extends State<ReportPage> {
                               daily.isNotEmpty
                                   ? daily[0].imgPath!.isNotEmpty
                                       ? Image.network(
-                                          '$tempUrl/${daily[0].imgPath}',
+                                          '${Env.imageUrl}/${daily[0].imgPath}',
                                           width: 100,
                                           height: 100,
                                         )
@@ -236,7 +238,7 @@ class _ReportPageState extends State<ReportPage> {
                               daily.isNotEmpty
                                   ? daily[1].imgPath!.isNotEmpty
                                       ? Image.network(
-                                          '$tempUrl/${daily[1].imgPath}',
+                                          '${Env.imageUrl}/${daily[1].imgPath}',
                                           width: 100,
                                           height: 100,
                                         )

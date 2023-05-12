@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 import '../../data/providers/auth_provider.dart';
 import '../../data/providers/presention_provider.dart';
+import '../../env/env.dart';
 import '../home/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -16,6 +18,7 @@ class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
   TextEditingController nikController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  bool isVisible = true;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -27,7 +30,7 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(Icons.login, size: 200),
+                Image.asset('assets/images/logo-smp.png'),
                 const SizedBox(height: 20),
                 Text(
                   'Login e-Absensi',
@@ -74,12 +77,18 @@ class _LoginPageState extends State<LoginPage> {
                             }
                             return null;
                           },
+                          obscureText: isVisible,
                           style: const TextStyle(fontSize: 15),
                           decoration: InputDecoration(
                             labelText: 'Password',
                             suffixIcon: IconButton(
-                              onPressed: () {},
-                              icon: const Icon(Icons.remove_red_eye_rounded),
+                              onPressed: () {
+                                isVisible = !isVisible;
+                                setState(() {});
+                              },
+                              icon: isVisible
+                                  ? const Icon(Icons.visibility)
+                                  : const Icon(Icons.visibility_off),
                             ),
                           ),
                         ),
@@ -101,11 +110,12 @@ class _LoginPageState extends State<LoginPage> {
                               return ElevatedButton(
                                 onPressed: () async {
                                   FocusScope.of(context).unfocus();
+                                  print(Env.url);
                                   if (formKey.currentState!.validate()) {
                                     await auth
-                                            .login(nikController.text.trim(),
-                                                passController.text.trim())
-                                            .then(
+                                        .login(nikController.text.trim(),
+                                            passController.text.trim())
+                                        .then(
                                       (_) async {
                                         // await present.getPresention(
                                         //     auth.user!.nik!, auth.user!.token!);
@@ -118,19 +128,16 @@ class _LoginPageState extends State<LoginPage> {
                                             .pushReplacementNamed(
                                                 HomePage.routeName);
                                       },
-                                    )
-                                        // .onError(
-                                        //   (error, stackTrace) {
-                                        //     return MotionToast.warning(
-                                        //       title: const Text('Login Failed'),
-                                        //       description: Text(
-                                        //         error.toString(),
-                                        //       ),
-                                        //     )
-                                        //     .show(context);
-                                        //   },
-                                        // )
-                                        ;
+                                    ).onError(
+                                      (error, stackTrace) {
+                                        return MotionToast.warning(
+                                          title: const Text('Login Failed'),
+                                          description: const Text(
+                                            'Check Your ID or Password',
+                                          ),
+                                        ).show(context);
+                                      },
+                                    );
                                   }
                                 },
                                 child: const Text('LOGIN'),

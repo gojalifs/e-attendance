@@ -6,9 +6,11 @@ import 'package:e_presention/utils/common_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../env/env.dart';
+
 class SuccessPage extends StatelessWidget {
   static const routeName = '/success_page';
-  const SuccessPage({super.key});
+  SuccessPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +30,8 @@ class SuccessPage extends StatelessWidget {
 }
 
 class SuccessScanPage extends StatelessWidget {
+  String baseUrl = Env.url.replaceAll(RegExp(r'api'), '');
+
   SuccessScanPage({
     Key? key,
     this.check = 'Masuk',
@@ -62,7 +66,7 @@ class SuccessScanPage extends StatelessWidget {
                               ? CircleAvatar(
                                   radius: 100,
                                   backgroundImage: NetworkImage(
-                                    'http://192.168.128.22/storage/${auth.user!.avaPath!}',
+                                    '$imageUrl/${auth.user!.avaPath!}',
                                   ),
                                 )
                               : const Icon(

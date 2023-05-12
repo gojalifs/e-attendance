@@ -11,6 +11,8 @@ import 'package:e_presention/screens/profile_page.dart';
 import 'package:e_presention/screens/reports_page.dart';
 import 'package:e_presention/screens/scanner/scan_page.dart';
 
+import '../../env/env.dart';
+
 class HomePage extends StatefulWidget {
   static const routeName = '/home';
 
@@ -21,9 +23,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String baseUrl = Env.url.replaceAll(RegExp(r'api'), '');
+
   String greeting = '';
   @override
   void initState() {
+    print(baseUrl);
     _updateGreeting();
     super.initState();
   }
@@ -81,7 +86,7 @@ class _HomePageState extends State<HomePage> {
                                       borderRadius: BorderRadius.circular(75),
                                       child: Image.network(
                                         fit: BoxFit.cover,
-                                        'http://192.168.128.22/storage/${value.user!.avaPath!}',
+                                        '${Env.imageUrl}/${value.user!.avaPath!}',
                                         width: 100,
                                         height: 100,
                                       ),

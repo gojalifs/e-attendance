@@ -11,11 +11,14 @@ import 'package:e_presention/services/sqflite_service.dart';
 import 'package:intl/intl.dart';
 
 import '../data/models/presention.dart';
+import '../data/models/revision.dart';
 import '../data/models/today_presention.dart';
 import '../data/models/user.dart';
+import '../utils/common_widget.dart';
 
 class ApiService {
-  final _baseUrl = Env.URL;
+  final _baseUrl = Env.url;
+  // final _baseUrl = url;
   User _user = User();
 
   Map<String, String> _setHeader() {
@@ -30,6 +33,7 @@ class ApiService {
   }
 
   Future<User> login(String id, String password) async {
+    print('endpoint $_baseUrl');
     var endpoint = Uri.parse('$_baseUrl/user/login');
 
     var resp = await http.post(endpoint, headers: {
@@ -46,10 +50,10 @@ class ApiService {
 
         SqfLiteService().saveUser(_user);
         await getUser();
-
+        print(_user.toMap());
         return _user;
       } else {
-        throw 'invalid credential';
+        throw Exception();
       }
     } catch (e) {
       throw 'failed login, $e';
@@ -60,21 +64,26 @@ class ApiService {
     try {
       await getUser();
     } catch (e) {
-      rethrow;
+      print(e);
+      throw "You Have Been Logged Out";
     }
     var endPoint = Uri.parse('$_baseUrl/user/checkstatus');
 
-    var resp = await http.post(
-      endPoint,
-      headers: {
-        'Accept': 'application/json',
-        'Authorization': 'Bearer ${_user.token}',
-      },
-    );
-    if (resp.statusCode == 200) {
-      return true;
-    } else {
-      return false;
+    try {
+      var resp = await http.post(
+        endPoint,
+        headers: {
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ${_user.token}',
+        },
+      );
+      if (resp.statusCode == 200) {
+        return true;
+      } else {
+        return false;
+      }
+    } on SocketException {
+      throw 'Error when communicate with Server. Check your connection.';
     }
   }
 
@@ -118,6 +127,7 @@ class ApiService {
       );
       var data = jsonDecode(resp.body);
 
+      print(data);
       List result = data['data'];
       return result.map((e) => TodayPresention.fromMap(e)).toList();
     } on FormatException {
@@ -264,6 +274,7 @@ class ApiService {
     var resp = await http.get(endPoint, headers: _setHeader());
     Map<String, dynamic> data = jsonDecode(resp.body);
     List list = data['data'];
+    print('object ${list}');
     List<OutPermit> result = list.map((e) => OutPermit.fromMap(e)).toList();
     return result;
   }
@@ -298,6 +309,7 @@ class ApiService {
         'potong_cuti': isPaidLeave ? 'ya' : 'tidak'
       });
       var data = jsonDecode(resp.body);
+      print('object $data');
       var result = data['data'];
       return result;
     } on FormatException {
@@ -314,6 +326,7 @@ class ApiService {
 
     var resp = await http.get(endPoint, headers: _setHeader());
     Map<String, dynamic> data = jsonDecode(resp.body);
+    print('object leave $data');
     List list = data['data'];
     List<PaidLeave> result = list.map((e) => PaidLeave.fromMap(e)).toList();
     return result;
@@ -327,13 +340,28 @@ class ApiService {
   ) async {
     var endPoint = Uri.parse('$_baseUrl/revisi');
 
-    await http.post(endPoint, headers: _setHeader(), body: {
+    var resp = await http.post(endPoint, headers: _setHeader(), body: {
       'user_nik': _user.nik,
       'tanggal': date,
       'jam': time,
-      'direvisi': revised,
+      'yang_direvisi': revised,
       'alasan': reason,
     });
+    Map<String, dynamic> data = jsonDecode(resp.body);
+    print('object revisi post $data');
+    var result = data['data'];
+    return result;
+  }
+
+  Future<List<Revisi>> fetchRevision() async {
+    var endPoint = Uri.parse('$_baseUrl/revisi/${_user.nik}');
+
+    var resp = await http.get(endPoint, headers: _setHeader());
+    Map<String, dynamic> data = jsonDecode(resp.body);
+    print('object revisi $data');
+    List list = data['data'];
+    List<Revisi> result = list.map((e) => Revisi.fromMap(e)).toList();
+    return result;
   }
 
   Future logout(String token) async {

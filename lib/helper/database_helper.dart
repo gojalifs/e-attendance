@@ -28,6 +28,12 @@ class DBHelper {
             isLoggedIn INTEGER
           )
         ''');
+        await db.execute('''
+          CREATE TABLE url (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            url TEXT
+          )
+        ''');
       },
     );
   }
