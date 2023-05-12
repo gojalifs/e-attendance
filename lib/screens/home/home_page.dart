@@ -1,6 +1,5 @@
 import 'package:e_presention/screens/revision/revision_page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:provider/provider.dart';
 
 import 'package:e_presention/data/providers/auth_provider.dart';
@@ -55,7 +54,6 @@ class _HomePageState extends State<HomePage> {
     Provider.of<PresentProvider>(context, listen: false).presentionCount();
     return GestureDetector(
       child: Scaffold(
-        floatingActionButtonLocation: ExpandableFab.location,
         body: SafeArea(
           child: Consumer2<PresentProvider, AuthProvider>(
             builder: (context, present, auth, child) => RefreshIndicator(
