@@ -5,6 +5,7 @@ part 'env.g.dart';
 
 @Envied(path: '.env')
 abstract class Env {
+  /// TODO make change when hosted online and edit gitignore
   @EnviedField(varName: 'url', obfuscate: true)
   // static final url = _Env.url;
   static const url = 'http://192.168.81.22:81/api';
