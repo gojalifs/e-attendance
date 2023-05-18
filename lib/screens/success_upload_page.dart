@@ -33,13 +33,10 @@ class SuccessPage extends StatelessWidget {
 }
 
 class SuccessScanPage extends StatelessWidget {
-  String baseUrl = Env.url.replaceAll(RegExp(r'api'), '');
-
   SuccessScanPage({
     Key? key,
     this.check = 'Masuk',
     this.time = 'Jam Skrg',
-    // this.image,
   }) : super(key: key);
 
   final String check;
