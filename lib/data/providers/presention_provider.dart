@@ -47,7 +47,6 @@ class PresentProvider with ChangeNotifier {
     await apiService.getUser();
     _count = await apiService.presentionCount();
     _state = ConnectionState.done;
-    print(_count);
     notifyListeners();
   }
 }

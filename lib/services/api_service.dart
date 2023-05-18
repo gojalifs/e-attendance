@@ -32,7 +32,6 @@ class ApiService {
   }
 
   Future<User> login(String id, String password) async {
-    print('endpoint $_baseUrl');
     var endpoint = Uri.parse('$_baseUrl/user/login');
 
     var resp = await http.post(endpoint, headers: {
@@ -49,7 +48,6 @@ class ApiService {
 
         SqfLiteService().saveUser(_user);
         await getUser();
-        print(_user.toMap());
         return _user;
       } else {
         throw Exception();
@@ -63,7 +61,6 @@ class ApiService {
     try {
       await getUser();
     } catch (e) {
-      print(e);
       throw "You Have Been Logged Out";
     }
     var endPoint = Uri.parse('$_baseUrl/user/checkstatus');
@@ -126,7 +123,6 @@ class ApiService {
       );
       var data = jsonDecode(resp.body);
 
-      print(data);
       List result = data['data'];
       return result.map((e) => TodayPresention.fromMap(e)).toList();
     } on FormatException {
@@ -273,7 +269,6 @@ class ApiService {
     var resp = await http.get(endPoint, headers: _setHeader());
     Map<String, dynamic> data = jsonDecode(resp.body);
     List list = data['data'];
-    print('object $list');
     List<OutPermit> result = list.map((e) => OutPermit.fromMap(e)).toList();
     return result;
   }
@@ -308,7 +303,6 @@ class ApiService {
         'potong_cuti': isPaidLeave ? 'ya' : 'tidak'
       });
       var data = jsonDecode(resp.body);
-      print('object $data');
       var result = data['data'];
       return result;
     } on FormatException {
@@ -325,7 +319,6 @@ class ApiService {
 
     var resp = await http.get(endPoint, headers: _setHeader());
     Map<String, dynamic> data = jsonDecode(resp.body);
-    print('object leave $data');
     List list = data['data'];
     List<PaidLeave> result = list.map((e) => PaidLeave.fromMap(e)).toList();
     return result;
@@ -347,7 +340,6 @@ class ApiService {
       'alasan': reason,
     });
     Map<String, dynamic> data = jsonDecode(resp.body);
-    print('object revisi post $data');
     var result = data['data'];
     return result;
   }
@@ -357,7 +349,6 @@ class ApiService {
 
     var resp = await http.get(endPoint, headers: _setHeader());
     Map<String, dynamic> data = jsonDecode(resp.body);
-    print('object revisi $data');
     List list = data['data'];
     List<Revisi> result = list.map((e) => Revisi.fromMap(e)).toList();
     return result;

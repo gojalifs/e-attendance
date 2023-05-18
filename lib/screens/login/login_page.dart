@@ -3,7 +3,6 @@ import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 import '../../data/providers/auth_provider.dart';
 import '../../data/providers/presention_provider.dart';
-import '../../env/env.dart';
 import '../home/home_page.dart';
 
 class LoginPage extends StatefulWidget {
@@ -131,7 +130,6 @@ class _LoginPageState extends State<LoginPage> {
                                 ConnectionState.active) {
                               onPressed2() async {
                                 FocusScope.of(context).unfocus();
-                                print(Env.url);
                                 if (formKey.currentState!.validate()) {
                                   await auth
                                       .login(nikController.text.trim(),

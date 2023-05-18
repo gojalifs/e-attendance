@@ -29,12 +29,8 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
 
   @override
   void initState() {
-    print('object');
-
     check();
-    print('object');
     Provider.of<PresentProvider>(context, listen: false).presentionCount();
-    print('object3');
     super.initState();
   }
 
