@@ -22,12 +22,9 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String baseUrl = Env.url.replaceAll(RegExp(r'api'), '');
-
   String greeting = '';
   @override
   void initState() {
-    print(baseUrl);
     _updateGreeting();
     super.initState();
   }
@@ -91,28 +88,30 @@ class _HomePageState extends State<HomePage> {
                                     ),
                             ),
                             const SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                SizedBox(
-                                  width: 300,
-                                  child: Text(
-                                    'Halo, ${value.user!.nama}',
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 2,
-                                    style: const TextStyle(
-                                      fontSize: 30,
-                                      fontWeight: FontWeight.bold,
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: 300,
+                                    child: Text(
+                                      'Halo, ${value.user!.nama ?? ''}',
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                      style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(height: 10),
-                                Text(
-                                  'Selamat $greeting',
-                                  style: style.textTheme.bodyMedium
-                                      ?.copyWith(color: Colors.black54),
-                                ),
-                              ],
+                                  const SizedBox(height: 10),
+                                  Text(
+                                    'Selamat $greeting',
+                                    style: style.textTheme.bodySmall
+                                        ?.copyWith(color: Colors.black54),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
@@ -166,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                                     time: timeIn,
                                     caption: timeIn.contains('Belum')
                                         ? 'Tap untuk masuk'
-                                        : 'Anda Sudah Presen',
+                                        : 'OK',
                                     icon: Icons.login,
                                     onTap: timeIn.contains('Belum')
                                         ? () {
@@ -182,7 +181,7 @@ class _HomePageState extends State<HomePage> {
                                     time: timeOut.isEmpty
                                         ? 'belum scan pulang'
                                         : timeOut,
-                                    caption: timeIn.contains('Belum')
+                                    caption: timeOut.contains('Belum')
                                         ? 'Tap untuk pulang'
                                         : 'Anda Sudah Presen',
                                     icon: Icons.logout_sharp,
@@ -325,7 +324,7 @@ class MainGridView extends StatelessWidget {
                 child: Icon(
                   icon,
                   color: Colors.white70,
-                  size: 40,
+                  size: 30,
                 ),
               ),
               Padding(
@@ -335,7 +334,7 @@ class MainGridView extends StatelessWidget {
                   child: Text(
                     time,
                     style: time.contains(RegExp(r'[0-9]'))
-                        ? style.textTheme.titleLarge
+                        ? style.textTheme.titleMedium
                         : style.textTheme.titleSmall
                             ?.copyWith(color: Colors.white),
                     overflow: TextOverflow.ellipsis,
@@ -348,7 +347,7 @@ class MainGridView extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: Text(
                   caption,
-                  style: style.textTheme.bodyMedium
+                  style: style.textTheme.bodySmall
                       ?.copyWith(color: Colors.black54),
                   textAlign: TextAlign.center,
                 ),

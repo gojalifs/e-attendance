@@ -29,8 +29,12 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
 
   @override
   void initState() {
+    print('object');
+
     check();
+    print('object');
     Provider.of<PresentProvider>(context, listen: false).presentionCount();
+    print('object3');
     super.initState();
   }
 
@@ -42,8 +46,8 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             SizedBox(
-                width: 100,
-                height: 100,
+                width: 250,
+                height: 250,
                 child: Image.asset('assets/images/logo-smp.png')),
             FutureBuilder(
               future: initializeProvider(context),

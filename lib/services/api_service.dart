@@ -14,7 +14,6 @@ import '../data/models/presention.dart';
 import '../data/models/revision.dart';
 import '../data/models/today_presention.dart';
 import '../data/models/user.dart';
-import '../utils/common_widget.dart';
 
 class ApiService {
   final _baseUrl = Env.url;
@@ -274,7 +273,7 @@ class ApiService {
     var resp = await http.get(endPoint, headers: _setHeader());
     Map<String, dynamic> data = jsonDecode(resp.body);
     List list = data['data'];
-    print('object ${list}');
+    print('object $list');
     List<OutPermit> result = list.map((e) => OutPermit.fromMap(e)).toList();
     return result;
   }

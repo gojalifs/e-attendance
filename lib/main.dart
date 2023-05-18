@@ -27,10 +27,12 @@ void main() async {
     scaleFactor: (deviceSize) {
       // screen width used in your UI design
       /// TODO add screen orientation check for responsive layout
-      const double widthOfDesign = 449;
+      const double widthOfDesign = 411;
       return deviceSize.width / widthOfDesign;
     },
   );
+  // smallest width 441 (note10pro)
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations(
       [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
   await initializeDateFormatting('id_ID');
@@ -63,13 +65,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'E-Presensi',
       theme: CustomTheme.themeData,
       home: const CustomSplashScreen(),
       routes: {
         LoginPage.routeName: (context) => const LoginPage(),
         HomePage.routeName: (context) => const HomePage(),
-        SuccessPage.routeName: (context) => SuccessPage(),
+        SuccessPage.routeName: (context) => const SuccessPage(),
         ProfilePage.routeName: (context) => ProfilePage(),
         ReportPage.routeName: (context) => const ReportPage(),
         ExitPermitPage.routeName: (context) => const ExitPermitPage(),

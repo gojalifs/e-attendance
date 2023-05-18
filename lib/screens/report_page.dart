@@ -45,9 +45,9 @@ class _ReportPageState extends State<ReportPage> {
         padding: const EdgeInsets.all(10),
         child: ListView(
           children: [
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: const [
+              children: [
                 Text('Nama'),
                 Text('Rudi'),
               ],

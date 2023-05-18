@@ -25,7 +25,6 @@ class ReviseProvider extends ChangeNotifier {
   }
 
   Future fetchRevision() async {
-    _state = ConnectionState.active;
     await _apiService.getUser();
     _revisis = await _apiService.fetchRevision();
     _state = ConnectionState.done;

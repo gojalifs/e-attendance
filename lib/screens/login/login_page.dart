@@ -33,11 +33,12 @@ class _LoginPageState extends State<LoginPage> {
                 Image.asset('assets/images/logo-smp.png'),
                 const SizedBox(height: 20),
                 Text(
-                  'Login e-Absensi',
+                  'Login e-Presensi\nSMP N 1 Karangbahagia',
                   style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                         color: Colors.black,
-                        fontSize: 50,
+                        fontSize: 25,
                       ),
+                  textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 100),
                 Form(
@@ -96,7 +97,28 @@ class _LoginPageState extends State<LoginPage> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  actions: [
+                                    TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('OK'))
+                                  ],
+                                  content: const Text(
+                                    'Silahkan hubungi admin untuk mengubah kata sandi anda',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
                           child: const Text('Lupa Kata Sandi'),
                         ),
                       ),
@@ -107,39 +129,41 @@ class _LoginPageState extends State<LoginPage> {
                           builder: (context, auth, present, child) {
                             if (auth.connectionState !=
                                 ConnectionState.active) {
+                              onPressed2() async {
+                                FocusScope.of(context).unfocus();
+                                print(Env.url);
+                                if (formKey.currentState!.validate()) {
+                                  await auth
+                                      .login(nikController.text.trim(),
+                                          passController.text.trim())
+                                      .then(
+                                    (_) async {
+                                      // await present.getPresention(
+                                      //     auth.user!.nik!, auth.user!.token!);
+                                      await present
+                                          .getTodayPresention(DateTime.now());
+                                      if (!mounted) {
+                                        return null;
+                                      }
+                                      return Navigator.of(context)
+                                          .pushReplacementNamed(
+                                              HomePage.routeName);
+                                    },
+                                  ).onError(
+                                    (error, stackTrace) {
+                                      return MotionToast.warning(
+                                        title: const Text('Login Failed'),
+                                        description: const Text(
+                                          'Check Your ID or Password',
+                                        ),
+                                      ).show(context);
+                                    },
+                                  );
+                                }
+                              }
+
                               return ElevatedButton(
-                                onPressed: () async {
-                                  FocusScope.of(context).unfocus();
-                                  print(Env.url);
-                                  if (formKey.currentState!.validate()) {
-                                    await auth
-                                        .login(nikController.text.trim(),
-                                            passController.text.trim())
-                                        .then(
-                                      (_) async {
-                                        // await present.getPresention(
-                                        //     auth.user!.nik!, auth.user!.token!);
-                                        await present
-                                            .getTodayPresention(DateTime.now());
-                                        if (!mounted) {
-                                          return null;
-                                        }
-                                        return Navigator.of(context)
-                                            .pushReplacementNamed(
-                                                HomePage.routeName);
-                                      },
-                                    ).onError(
-                                      (error, stackTrace) {
-                                        return MotionToast.warning(
-                                          title: const Text('Login Failed'),
-                                          description: const Text(
-                                            'Check Your ID or Password',
-                                          ),
-                                        ).show(context);
-                                      },
-                                    );
-                                  }
-                                },
+                                onPressed: onPressed2,
                                 child: const Text('LOGIN'),
                               );
                             } else {

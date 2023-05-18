@@ -94,13 +94,13 @@ class _ScanPageState extends State<ScanPage> {
                             builder: (context) {
                               return AlertDialog(
                                 insetPadding:
-                                    const EdgeInsets.symmetric(horizontal: 100),
+                                    const EdgeInsets.symmetric(horizontal: 50),
                                 contentPadding: const EdgeInsets.all(20),
                                 content: Wrap(
                                   runSpacing: 20,
                                   children: [
                                     Text(
-                                      '''Mohon Tunggu, sedang menyiapkan kamera, \n'''
+                                      '''Mohon Tunggu, Silahkan anda ambil foto selfie, \n'''
                                       '''Pastikan muka anda terlihat jelas di kamera.''',
                                       style: style.textTheme.headlineSmall!
                                           .copyWith(
@@ -115,7 +115,7 @@ class _ScanPageState extends State<ScanPage> {
                             },
                           );
 
-                          await Future.delayed(const Duration(seconds: 2))
+                          await Future.delayed(const Duration(seconds: 3))
                               .then((value) => Navigator.of(context).pop());
 
                           await scan.getPict();
@@ -178,7 +178,7 @@ class _ScanPageState extends State<ScanPage> {
                           },
                           child: const Text(
                             '''Aplikasi ini membutuhkan akses lokasi yang '''
-                            '''presisi. Tekan untuk meminta akses lokasi.''',
+                            '''presisi dan kamera. Tekan untuk meminta akses lokasi.''',
                             textAlign: TextAlign.justify,
                           ),
                         ),

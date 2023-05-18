@@ -1,16 +1,19 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:provider/provider.dart';
+
 import 'package:e_presention/data/providers/auth_provider.dart';
 import 'package:e_presention/data/providers/photo_provider.dart';
 import 'package:e_presention/utils/common_widget.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../env/env.dart';
 
 class SuccessPage extends StatelessWidget {
   static const routeName = '/success_page';
-  SuccessPage({super.key});
+  const SuccessPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +69,7 @@ class SuccessScanPage extends StatelessWidget {
                               ? CircleAvatar(
                                   radius: 100,
                                   backgroundImage: NetworkImage(
-                                    '$imageUrl/${auth.user!.avaPath!}',
+                                    '${Env.imageUrl}/${auth.user!.avaPath!}',
                                   ),
                                 )
                               : const Icon(
@@ -89,7 +92,17 @@ class SuccessScanPage extends StatelessWidget {
                             builder: (context, value, child) =>
                                 Image.file(File(scan.images!.path)),
                           ),
-                        )
+                        ),
+                        CustomWidget.divider,
+                        Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Consumer<PhotoProvider>(
+                            builder: (context, value, child) => MapWidget(
+                              long: double.parse(value.long),
+                              lat: double.parse(value.lat),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -137,6 +150,60 @@ class _SuccessBody extends StatelessWidget {
                 fontSize: 25,
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class MapWidget extends StatelessWidget {
+  final double long;
+  final double lat;
+
+  const MapWidget({
+    Key? key,
+    required this.long,
+    required this.lat,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: double.infinity,
+      height: 300,
+      child: FlutterMap(
+        options: MapOptions(
+          center: LatLng(lat, long),
+          zoom: 15,
+        ),
+        nonRotatedChildren: const [
+          RichAttributionWidget(
+            attributions: [
+              TextSourceAttribution(
+                'OpenStreetMap contributors',
+                // onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')),
+              ),
+            ],
+          ),
+        ],
+        children: [
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            userAgentPackageName: 'com.example.e_presention',
+          ),
+          MarkerLayer(
+            markers: [
+              Marker(
+                point: LatLng(lat, long),
+                builder: (context) {
+                  return const Icon(
+                    Icons.location_on,
+                    color: Colors.red,
+                  );
+                },
+              )
+            ],
           ),
         ],
       ),
