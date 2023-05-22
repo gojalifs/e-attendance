@@ -288,6 +288,7 @@ class ApiService {
     DateTime? endDate,
     bool isPaidLeave,
     String reason,
+    String type,
   ) async {
     String formattedDate = DateFormat('y-M-d').format(date);
     String formattedEndDate = '';
@@ -305,6 +306,7 @@ class ApiService {
         'tanggal': formattedDate,
         'tanggal_selesai': formattedEndDate,
         'alasan': reason,
+        'jenis_cuti': type,
         'potong_cuti': isPaidLeave ? 'ya' : 'tidak'
       });
       var data = jsonDecode(resp.body);
