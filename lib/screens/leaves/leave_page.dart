@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../../data/providers/auth_provider.dart';
 import '../../utils/common_widget.dart';
 
+// enum _leaveType {Hamil, Nikah, Biasa, }
 class LeavePage extends StatefulWidget {
   static String routeName = '/leave';
   const LeavePage({super.key});
@@ -23,6 +24,7 @@ class _LeavePageState extends State<LeavePage> {
   DateTime endDate = DateTime.now();
   bool isPaidLeave = false;
   String reason = '';
+  String dropDownValue = 'Biasa/Tahunan';
 
   @override
   void initState() {
@@ -122,7 +124,7 @@ class _LeavePageState extends State<LeavePage> {
                                     children: [
                                       Text(
                                         DateFormat.yMMMMd('id_ID').format(date),
-                                        style: const TextStyle(fontSize: 20),
+                                        style: const TextStyle(fontSize: 17),
                                       ),
                                       const IconButton(
                                         onPressed: null,
@@ -175,10 +177,12 @@ class _LeavePageState extends State<LeavePage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text(
-                                        DateFormat.yMMMMd('id_ID')
-                                            .format(endDate),
-                                        style: const TextStyle(fontSize: 20),
+                                      Expanded(
+                                        child: Text(
+                                          DateFormat.yMMMMd('id_ID')
+                                              .format(endDate),
+                                          style: const TextStyle(fontSize: 17),
+                                        ),
                                       ),
                                       const IconButton(
                                         onPressed: null,
@@ -206,6 +210,36 @@ class _LeavePageState extends State<LeavePage> {
                           },
                         ),
                         const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            const Expanded(child: Text('Jenis Cuti')),
+                            DropdownButton(
+                              value: dropDownValue,
+                              style: const TextStyle(
+                                fontSize: 17,
+                                color: Colors.black,
+                              ),
+                              onChanged: (value) {
+                                dropDownValue = value ?? '';
+                                setState(() {});
+                              },
+                              items: const [
+                                DropdownMenuItem(
+                                  value: 'Biasa/Tahunan',
+                                  child: Text('Biasa/Tahunan'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Nikah',
+                                  child: Text('Nikah'),
+                                ),
+                                DropdownMenuItem(
+                                  value: 'Melahirkan',
+                                  child: Text('Melahirkan'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                         Form(
                           key: formKey,
                           child: TextFormField(
@@ -238,11 +272,11 @@ class _LeavePageState extends State<LeavePage> {
                                 if (formKey.currentState!.validate()) {
                                   await exit
                                       .uploadCreateLeave(
-                                    date,
-                                    endDate,
-                                    isPaidLeave,
-                                    reasonController.text,
-                                  )
+                                          date,
+                                          endDate,
+                                          isPaidLeave,
+                                          reasonController.text,
+                                          dropDownValue)
                                       .then(
                                     (value) {
                                       reasonController.clear();
@@ -301,6 +335,7 @@ class _LeavePageState extends State<LeavePage> {
                       DataColumn(label: Text('Tanggal Selesai')),
                       DataColumn(label: Text('Alasan')),
                       DataColumn(label: Text('Potong Cuti')),
+                      DataColumn(label: Text('Jenis Cuti')),
                       DataColumn(label: Text('Status')),
                     ],
                     rows: leave.leave.map(
@@ -320,6 +355,7 @@ class _LeavePageState extends State<LeavePage> {
                           DataCell(Text(e.endDate ?? '-')),
                           DataCell(Text(e.alasan!)),
                           DataCell(Text(e.potongCuti!)),
+                          DataCell(Text(e.jenisCuti!)),
                           DataCell(Text(status)),
                         ]);
                       },

@@ -283,6 +283,7 @@ class ApiService {
     DateTime? endDate,
     bool isPaidLeave,
     String reason,
+    String type,
   ) async {
     String formattedDate = DateFormat('y-M-d').format(date);
     String formattedEndDate = '';
@@ -300,6 +301,7 @@ class ApiService {
         'tanggal': formattedDate,
         'tanggal_selesai': formattedEndDate,
         'alasan': reason,
+        'jenis_cuti': type,
         'potong_cuti': isPaidLeave ? 'ya' : 'tidak'
       });
       var data = jsonDecode(resp.body);
@@ -329,9 +331,35 @@ class ApiService {
     String time,
     String revised,
     String reason,
+    File image,
   ) async {
     var endPoint = Uri.parse('$_baseUrl/revisi');
 
+    try {
+      final request = http.MultipartRequest('POST', endPoint)
+        ..fields['user_nik'] = _user.nik!
+        ..fields['tanggal'] = date
+        ..fields['jam'] = time
+        ..fields['yang_direvisi'] = revised
+        ..files.add(await http.MultipartFile.fromPath('img', image.path))
+        ..fields['alasan'] = reason
+        ..headers['Accept'] = 'application/json'
+        ..headers['Authorization'] = 'Bearer ${_user.token}';
+
+      var resp = await request.send();
+      var respBody = await http.Response.fromStream(resp);
+
+      if (respBody.statusCode == 401) {
+        throw 'Unauthenticated';
+      } else if (respBody.statusCode == 200 || respBody.statusCode == 201) {
+        Map<String, dynamic> data = jsonDecode(respBody.body);
+        print(data['data']);
+        return data['data'];
+        return 'Success Revised';
+      } else {
+        throw 'Something error';
+      }
+    } catch (e) {}
     var resp = await http.post(endPoint, headers: _setHeader(), body: {
       'user_nik': _user.nik,
       'tanggal': date,

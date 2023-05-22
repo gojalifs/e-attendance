@@ -11,10 +11,10 @@ class LeaveProvider with ChangeNotifier {
   ConnectionState get connectionState => _connectionState;
   List<PaidLeave> get leave => _leave;
 
-  Future uploadCreateLeave(
-      DateTime date, DateTime endDate, bool isPaidLeave, String reason) async {
+  Future uploadCreateLeave(DateTime date, DateTime endDate, bool isPaidLeave,
+      String reason, String type) async {
     _connectionState = ConnectionState.active;
-    await _apiService.addLeave(date, endDate, isPaidLeave, reason);
+    await _apiService.addLeave(date, endDate, isPaidLeave, reason, type);
     _connectionState = ConnectionState.done;
     notifyListeners();
   }
