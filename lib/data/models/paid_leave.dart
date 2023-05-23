@@ -7,6 +7,7 @@ class PaidLeave {
   final String? endDate;
   final String? alasan;
   final String? potongCuti;
+  final String? jenisCuti;
   final int? status;
 
   PaidLeave({
@@ -16,6 +17,7 @@ class PaidLeave {
     this.endDate,
     this.alasan,
     this.potongCuti,
+    this.jenisCuti,
     this.status,
   });
 
@@ -27,6 +29,7 @@ class PaidLeave {
       'endDate': endDate,
       'alasan': alasan,
       'potongCuti': potongCuti,
+      'jenisCuti': jenisCuti,
       'status': status,
     };
   }
@@ -39,6 +42,7 @@ class PaidLeave {
       endDate: map['endDate'],
       alasan: map['alasan'],
       potongCuti: map['potongCuti'],
+      jenisCuti: map['jenisCuti'],
       status: map['status']?.toInt(),
     );
   }

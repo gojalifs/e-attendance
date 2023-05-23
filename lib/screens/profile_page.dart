@@ -41,8 +41,13 @@ class ProfilePage extends StatelessWidget {
                             backgroundImage: user.avaPath! != '-'
                                 ? NetworkImage(
                                     '${baseUrl}storage/${user.avaPath!}')
-                                : const AssetImage('assets/images/user.jpeg')
-                                    as ImageProvider,
+                                : null,
+                            child: user.avaPath! != '-'
+                                ? null
+                                : const Icon(
+                                    Icons.account_circle_rounded,
+                                    size: 200,
+                                  ),
                           );
                         },
                       ),

@@ -56,6 +56,7 @@ class _HomePageState extends State<HomePage> {
             builder: (context, present, auth, child) => RefreshIndicator(
               onRefresh: () async {
                 await present.getTodayPresention(DateTime.now());
+                await present.presentionCount();
               },
               child: ListView(
                 children: [
