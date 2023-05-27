@@ -14,15 +14,20 @@ class LeaveProvider with ChangeNotifier {
   Future uploadCreateLeave(DateTime date, DateTime endDate, bool isPaidLeave,
       String reason, String type) async {
     _connectionState = ConnectionState.active;
-    await _apiService.addLeave(date, endDate, isPaidLeave, reason, type);
+    await _apiService
+        .addLeave(date, endDate, isPaidLeave, reason, type)
+        .whenComplete(() {
+      _connectionState = ConnectionState.done;
+    });
     _connectionState = ConnectionState.done;
     notifyListeners();
   }
 
   Future fetchLeave() async {
     _connectionState = ConnectionState.active;
-    await _apiService.getUser();
-    _leave = await _apiService.fetchLeave();
+    _leave = await _apiService.fetchLeave().whenComplete(() {
+      _connectionState = ConnectionState.done;
+    });
     _connectionState = ConnectionState.done;
     notifyListeners();
   }

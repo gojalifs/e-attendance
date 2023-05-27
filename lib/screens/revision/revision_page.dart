@@ -129,15 +129,17 @@ class _RevisionPageState extends State<RevisionPage> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Text(
-                                          DateFormat.yMMMMd('id_ID')
-                                              .format(date),
-                                          style: const TextStyle(fontSize: 20),
+                                        Expanded(
+                                          flex: 3,
+                                          child: Text(DateFormat.yMMMMd('id_ID')
+                                              .format(date)),
                                         ),
-                                        const IconButton(
-                                          onPressed: null,
-                                          icon: Icon(
-                                            Icons.edit_calendar_rounded,
+                                        const Expanded(
+                                          child: IconButton(
+                                            onPressed: null,
+                                            icon: Icon(
+                                              Icons.edit_calendar_rounded,
+                                            ),
                                           ),
                                         ),
                                       ],
@@ -246,28 +248,13 @@ class _RevisionPageState extends State<RevisionPage> {
                                   child: Text('Upload Bukti (JPG/PNG)')),
                               Expanded(
                                 child: Consumer<ReviseProvider>(
-                                  builder: (context, value, child) => Column(
-                                    children: [
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          IconButton(
-                                            onPressed: () {
-                                              value.getPictCamera();
-                                            },
-                                            icon: const Icon(
-                                                Icons.photo_camera_rounded),
-                                          ),
-                                          IconButton(
-                                            onPressed: () {
-                                              value.getPictGallery();
-                                            },
-                                            icon: const Icon(Icons.filter),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
+                                  builder: (context, value, child) =>
+                                      IconButton(
+                                    onPressed: () {
+                                      value.getPictCamera();
+                                    },
+                                    icon:
+                                        const Icon(Icons.photo_camera_rounded),
                                   ),
                                 ),
                               ),
@@ -342,10 +329,10 @@ class _RevisionPageState extends State<RevisionPage> {
                               onPressed: value.state == ConnectionState.active
                                   ? null
                                   : () async {
-                                      await apiService.getUser();
-                                      if (!mounted) {
-                                        return;
-                                      }
+                                      // await apiService.getUser();
+                                      // if (!mounted) {
+                                      //   return;
+                                      // }
                                       if (value.images == null) {
                                         MotionToast.warning(
                                           description: const Text(

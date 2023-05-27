@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:e_presention/env/env.dart';
 import 'package:e_presention/services/sqflite_service.dart';
 import 'package:intl/intl.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '../data/models/presention.dart';
 import '../data/models/revision.dart';
@@ -40,11 +41,14 @@ class ApiService {
       'nik': id,
       'password': password,
     });
+    print(resp.statusCode);
     try {
       if (resp.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(resp.body)['data'];
+        print(jsonDecode(resp.body));
         data['isLoggedIn'] = 1;
         _user = User.fromMap(data);
+        print(_user.toMap());
 
         SqfLiteService().saveUser(_user);
         await getUser();
@@ -61,18 +65,16 @@ class ApiService {
     try {
       await getUser();
     } catch (e) {
-      throw "You Have Been Logged Out";
+      rethrow;
     }
     var endPoint = Uri.parse('$_baseUrl/user/checkstatus');
 
     try {
       var resp = await http.post(
         endPoint,
-        headers: {
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${_user.token}',
-        },
+        headers: _setHeader(),
       );
+      print(resp.body);
       if (resp.statusCode == 200) {
         return true;
       } else {
@@ -107,7 +109,6 @@ class ApiService {
   Future<List<TodayPresention>> getTodayPresention(String? date) async {
     await getUser();
     var endPoint = Uri.parse('$_baseUrl/daily');
-    // String fDate = DateFormat('y-M-d', 'id-ID').format(date);
 
     try {
       var resp = await http.post(
@@ -135,12 +136,14 @@ class ApiService {
   }
 
   Future<int> presentionCount() async {
+    await getUser();
     var endPoint = Uri.parse('$_baseUrl/dailycount');
 
     try {
       var resp = await http
           .post(endPoint, headers: _setHeader(), body: {'nik': _user.nik});
       var data = jsonDecode(resp.body);
+      print('data $data');
       return data['data'];
     } catch (e) {
       rethrow;
@@ -178,6 +181,27 @@ class ApiService {
     }
   }
 
+  Future<User> getProfile() async {
+    try {
+      await getUser();
+      String nik = _user.nik ?? '';
+
+      var endPoint = Uri.parse('$_baseUrl/user/data/$nik');
+      var resp = await http.get(endPoint, headers: _setHeader());
+      Map<String, dynamic> result = jsonDecode(resp.body);
+      print(result);
+      User user = User.fromMap(result);
+      SqfLiteService().updateUser(user);
+      return user;
+    } on SocketException {
+      throw 'Error on Network';
+    } on FormatException {
+      throw 'Bad Response';
+    } catch (e) {
+      rethrow;
+    }
+  }
+
   Future<User> updateProfile(String column, String? data) async {
     var endPoint = Uri.parse('$_baseUrl/updateuser');
 
@@ -192,7 +216,10 @@ class ApiService {
       });
 
       Map<String, dynamic> result = jsonDecode(resp.body);
-      return User.fromMap(result['data']);
+      User user = User.fromMap(result['data']);
+      print(user);
+      SqfLiteService().updateUser(user);
+      return user;
     } on FormatException {
       throw 'Bad Response';
     } on SocketException {
@@ -214,7 +241,7 @@ class ApiService {
 
       var resp = await request.send();
       var respBody = await http.Response.fromStream(resp);
-
+      print(respBody.body);
       Map<String, dynamic> result = jsonDecode(respBody.body);
       _user = User.fromMap(result['data']);
       await SqfLiteService().updateUser(_user);
@@ -264,6 +291,7 @@ class ApiService {
   }
 
   Future<List<OutPermit>> fetchpermit() async {
+    await getUser();
     var endPoint = Uri.parse('$_baseUrl/izink/${_user.nik}');
 
     var resp = await http.get(endPoint, headers: _setHeader());
@@ -317,10 +345,12 @@ class ApiService {
   }
 
   Future<List<PaidLeave>> fetchLeave() async {
+    await getUser();
     var endPoint = Uri.parse('$_baseUrl/absen/${_user.nik}');
 
     var resp = await http.get(endPoint, headers: _setHeader());
     Map<String, dynamic> data = jsonDecode(resp.body);
+    print(data);
     List list = data['data'];
     List<PaidLeave> result = list.map((e) => PaidLeave.fromMap(e)).toList();
     return result;
@@ -355,7 +385,6 @@ class ApiService {
         Map<String, dynamic> data = jsonDecode(respBody.body);
         print(data['data']);
         return data['data'];
-        return 'Success Revised';
       } else {
         throw 'Something error';
       }
@@ -373,10 +402,12 @@ class ApiService {
   }
 
   Future<List<Revisi>> fetchRevision() async {
+    await getUser();
     var endPoint = Uri.parse('$_baseUrl/revisi/${_user.nik}');
 
     var resp = await http.get(endPoint, headers: _setHeader());
     Map<String, dynamic> data = jsonDecode(resp.body);
+    print(data);
     List list = data['data'];
     List<Revisi> result = list.map((e) => Revisi.fromMap(e)).toList();
     return result;
@@ -393,6 +424,7 @@ class ApiService {
           'Authorization': 'Bearer $token',
         },
       );
+      print(resp.body);
       if (resp.statusCode == 500 || resp.statusCode == 401) {
         throw Exception('unauthorized');
       }

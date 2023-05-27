@@ -25,16 +25,19 @@ class ReviseProvider extends ChangeNotifier {
 
     _state = ConnectionState.active;
     notifyListeners();
-    await _apiService.getUser();
-    await _apiService.presentionRevise(
-        fDate, fTime, reviseType, reason, _image!);
+    await _apiService
+        .presentionRevise(fDate, fTime, reviseType, reason, _image!)
+        .whenComplete(() {
+      _state = ConnectionState.done;
+    });
     _state = ConnectionState.done;
     notifyListeners();
   }
 
   Future fetchRevision() async {
-    await _apiService.getUser();
-    _revisis = await _apiService.fetchRevision();
+    _revisis = await _apiService.fetchRevision().whenComplete(() {
+      _state = ConnectionState.done;
+    });
     _state = ConnectionState.done;
     notifyListeners();
   }

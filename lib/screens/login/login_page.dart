@@ -1,5 +1,5 @@
+import 'package:e_presention/helper/database_helper.dart';
 import 'package:flutter/material.dart';
-import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 import '../../data/providers/auth_provider.dart';
 import '../../data/providers/presention_provider.dart';
@@ -131,32 +131,25 @@ class _LoginPageState extends State<LoginPage> {
                               onPressed2() async {
                                 FocusScope.of(context).unfocus();
                                 if (formKey.currentState!.validate()) {
+                                  await DBHelper().deleteDb();
                                   await auth
                                       .login(nikController.text.trim(),
                                           passController.text.trim())
                                       .then(
-                                    (_) async {
-                                      // await present.getPresention(
-                                      //     auth.user!.nik!, auth.user!.token!);
-                                      await present
-                                          .getTodayPresention(DateTime.now());
-                                      if (!mounted) {
-                                        return null;
-                                      }
-                                      return Navigator.of(context)
-                                          .pushReplacementNamed(
-                                              HomePage.routeName);
-                                    },
-                                  ).onError(
-                                    (error, stackTrace) {
-                                      return MotionToast.warning(
-                                        title: const Text('Login Failed'),
-                                        description: const Text(
-                                          'Check Your ID or Password',
-                                        ),
-                                      ).show(context);
-                                    },
-                                  );
+                                        (_) => Navigator.of(context)
+                                            .pushReplacementNamed(
+                                                HomePage.routeName),
+                                        // )
+                                        // .onError(
+                                        //   (error, stackTrace) {
+                                        //     return MotionToast.warning(
+                                        //       title: const Text('Login Failed'),
+                                        //       description: Text(
+                                        //         error.toString(),
+                                        //       ),
+                                        //     ).show(context);
+                                        //   },
+                                      );
                                 }
                               }
 

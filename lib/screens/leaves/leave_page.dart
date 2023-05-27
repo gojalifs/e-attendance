@@ -1,10 +1,10 @@
-import 'package:e_presention/data/providers/leave_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 
 import '../../data/providers/auth_provider.dart';
+import '../../data/providers/leave_provider.dart';
 import '../../utils/common_widget.dart';
 
 // enum _leaveType {Hamil, Nikah, Biasa, }
@@ -197,7 +197,6 @@ class _LeavePageState extends State<LeavePage> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
                         CheckboxListTile(
                           title: Text(
                             'Potong Cuti',
@@ -209,7 +208,6 @@ class _LeavePageState extends State<LeavePage> {
                             setState(() {});
                           },
                         ),
-                        const SizedBox(height: 20),
                         Row(
                           children: [
                             const Expanded(child: Text('Jenis Cuti')),
@@ -240,6 +238,7 @@ class _LeavePageState extends State<LeavePage> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 10),
                         Form(
                           key: formKey,
                           child: TextFormField(

@@ -21,7 +21,9 @@ class PresentProvider with ChangeNotifier {
 
   Future getPresention(String nik, String token) async {
     _state = ConnectionState.active;
-    _presention = await apiService.getPresention();
+    _presention = await apiService.getPresention().whenComplete(() {
+      _state = ConnectionState.done;
+    });
     _state = ConnectionState.done;
     notifyListeners();
   }
@@ -29,7 +31,9 @@ class PresentProvider with ChangeNotifier {
   Future getTodayPresention(DateTime formattedDate) async {
     _state = ConnectionState.active;
     String fDate = DateFormat('y-M-d').format(formattedDate);
-    _today = await apiService.getTodayPresention(fDate);
+    _today = await apiService.getTodayPresention(fDate).whenComplete(() {
+      _state = ConnectionState.done;
+    });
     _state = ConnectionState.done;
     notifyListeners();
   }
@@ -37,15 +41,18 @@ class PresentProvider with ChangeNotifier {
   Future getTodayReportPresention(DateTime formattedDate) async {
     _state = ConnectionState.active;
     String fDate = DateFormat('y-M-d').format(formattedDate);
-    _todayReports = await apiService.getTodayPresention(fDate);
+    _todayReports = await apiService.getTodayPresention(fDate).whenComplete(() {
+      _state = ConnectionState.done;
+    });
     _state = ConnectionState.done;
     notifyListeners();
   }
 
   Future presentionCount() async {
     _state = ConnectionState.active;
-    await apiService.getUser();
-    _count = await apiService.presentionCount();
+    _count = await apiService.presentionCount().whenComplete(() {
+      _state = ConnectionState.done;
+    });
     _state = ConnectionState.done;
     notifyListeners();
   }

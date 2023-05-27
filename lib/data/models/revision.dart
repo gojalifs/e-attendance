@@ -8,6 +8,7 @@ class Revisi {
   final String? reason;
   final String? revised;
   final int? isApproved;
+  final String? approval;
 
   Revisi({
     this.id,
@@ -17,6 +18,7 @@ class Revisi {
     this.reason,
     this.revised,
     this.isApproved,
+    this.approval,
   });
 
   Map<String, dynamic> toMap() {
@@ -28,6 +30,7 @@ class Revisi {
       'reason': reason,
       'revised': revised,
       'isApproved': isApproved,
+      'approval': approval,
     };
   }
 
@@ -40,6 +43,7 @@ class Revisi {
       reason: map['reason'],
       revised: map['revised'],
       isApproved: map['isApproved']?.toInt(),
+      approval: map['approval'],
     );
   }
 

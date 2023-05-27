@@ -85,8 +85,11 @@ class PhotoProvider extends ChangeNotifier {
 
   Future sendPresention(type) async {
     _state = ConnectionState.waiting;
-    Map<String, dynamic> resp =
-        await apiService.uploadPresent(type, long, lat, _image!);
+    Map<String, dynamic> resp = await apiService
+        .uploadPresent(type, long, lat, _image!)
+        .whenComplete(() {
+      _state = ConnectionState.done;
+    });
     _detail = PresentionDetail.fromMap(resp);
     _state = ConnectionState.done;
 

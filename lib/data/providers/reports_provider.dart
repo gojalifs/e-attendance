@@ -15,7 +15,9 @@ class ReportProvider extends ChangeNotifier {
   Future getTodayPresention(DateTime date) async {
     _state = ConnectionState.active;
     String fDate = DateFormat('y-M-d').format(date);
-    _today = await apiService.getTodayPresention(fDate);
+    _today = await apiService.getTodayPresention(fDate).whenComplete(() {
+      _state = ConnectionState.done;
+    });
     _state = ConnectionState.done;
     notifyListeners();
   }

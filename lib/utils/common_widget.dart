@@ -54,12 +54,10 @@ class BiodataWidget extends StatelessWidget {
           ),
           Expanded(
             child: IconButton(
-              icon: title == 'No. ID' || title == 'NIPNS' || !isProfilePage!
+              icon: title == 'No. ID' || title == 'NIP' || !isProfilePage!
                   ? const SizedBox()
                   : const Icon(Icons.edit_square),
-              onPressed: title == 'No. ID' ||
-                      title == 'NIPNS' ||
-                      !isProfilePage!
+              onPressed: title == 'No. ID' || title == 'NIP' || !isProfilePage!
                   ? null
                   : () {
                       final TextEditingController controller =

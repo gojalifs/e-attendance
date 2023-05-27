@@ -16,15 +16,20 @@ class ExitPermitProvider with ChangeNotifier {
       TimeOfDay backTime, String reason) async {
     String fDate = DateFormat('y-M-d').format(date);
     _connectionState = ConnectionState.active;
-    await _apiService.addPermit(fDate, outTime, backTime, reason);
+    await _apiService
+        .addPermit(fDate, outTime, backTime, reason)
+        .whenComplete(() {
+      _connectionState = ConnectionState.done;
+    });
     _connectionState = ConnectionState.done;
     notifyListeners();
   }
 
   Future fetchPermit() async {
     _connectionState = ConnectionState.active;
-    await _apiService.getUser();
-    _permit = await _apiService.fetchpermit();
+    _permit = await _apiService.fetchpermit().whenComplete(() {
+      _connectionState = ConnectionState.done;
+    });
     _connectionState = ConnectionState.done;
     notifyListeners();
   }

@@ -1,11 +1,10 @@
 import 'dart:io';
 
-import 'package:e_presention/services/sqflite_service.dart';
 import 'package:flutter/material.dart';
 
-import 'package:e_presention/helper/database_helper.dart';
-import 'package:e_presention/services/api_service.dart';
-
+import '../../helper/database_helper.dart';
+import '../../services/api_service.dart';
+import '../../services/sqflite_service.dart';
 import '../models/user.dart';
 
 class AuthProvider with ChangeNotifier {
@@ -32,10 +31,11 @@ class AuthProvider with ChangeNotifier {
   Future<bool> checkLoginStatus() async {
     bool status = false;
 
-    status = await _apiService.checkLoginStatus();
+    status = await _apiService.checkLoginStatus().whenComplete(() {
+      _connectionState = ConnectionState.done;
+    });
 
     if (status) {
-      await _apiService.getUser();
       _user = await SqfLiteService().getUser();
       notifyListeners();
     } else {
@@ -49,10 +49,23 @@ class AuthProvider with ChangeNotifier {
     TODO
     future development must move this code to user provider
   */
+
+  Future getProfile() async {
+    _connectionState = ConnectionState.active;
+
+    _user = await _apiService.getProfile().whenComplete(() {
+      _connectionState = ConnectionState.done;
+    });
+    _connectionState = ConnectionState.done;
+    notifyListeners();
+  }
+
   Future updateProfile(String column, String data) async {
     _connectionState = ConnectionState.active;
 
-    _user = await _apiService.updateProfile(column, data);
+    _user = await _apiService.updateProfile(column, data).whenComplete(() {
+      _connectionState = ConnectionState.done;
+    });
 
     _connectionState = ConnectionState.done;
     notifyListeners();
@@ -60,14 +73,18 @@ class AuthProvider with ChangeNotifier {
 
   Future updateAvatar(File img) async {
     _connectionState = ConnectionState.active;
-    _user = await _apiService.updateAvatar(img);
+    _user = await _apiService.updateAvatar(img).whenComplete(() {
+      _connectionState = ConnectionState.done;
+    });
     _connectionState = ConnectionState.done;
     notifyListeners();
   }
 
   Future logout() async {
     _connectionState = ConnectionState.active;
-    await _apiService.logout(user!.token!);
+    await _apiService.logout(user!.token!).whenComplete(() {
+      _connectionState = ConnectionState.done;
+    });
     await DBHelper().deleteDb();
     _user = User();
     _connectionState = ConnectionState.done;

@@ -1,16 +1,16 @@
-import 'package:e_presention/screens/revision/revision_page.dart';
+import 'package:e_presention/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:e_presention/data/providers/auth_provider.dart';
-import 'package:e_presention/data/providers/presention_provider.dart';
-import 'package:e_presention/screens/exit_permit_page.dart';
-import 'package:e_presention/screens/leaves/leave_page.dart';
-import 'package:e_presention/screens/profile_page.dart';
-import 'package:e_presention/screens/reports_page.dart';
-import 'package:e_presention/screens/scanner/scan_page.dart';
-
+import '../../data/providers/auth_provider.dart';
+import '../../data/providers/presention_provider.dart';
 import '../../env/env.dart';
+import '../exit_permit_page.dart';
+import '../leaves/leave_page.dart';
+import '../profile_page.dart';
+import '../reports_page.dart';
+import '../revision/revision_page.dart';
+import '../scanner/scan_page.dart';
 
 class HomePage extends StatefulWidget {
   static const routeName = '/home';
@@ -45,16 +45,16 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     ThemeData style = Theme.of(context);
-    Provider.of<PresentProvider>(context, listen: false).getTodayPresention(
-      DateTime.now(),
-    );
-    Provider.of<PresentProvider>(context, listen: false).presentionCount();
+    Provider.of<PresentProvider>(context, listen: false)
+      ..getTodayPresention(DateTime.now())
+      ..presentionCount();
     return GestureDetector(
       child: Scaffold(
         body: SafeArea(
           child: Consumer2<PresentProvider, AuthProvider>(
             builder: (context, present, auth, child) => RefreshIndicator(
               onRefresh: () async {
+                await ApiService().getUser();
                 await present.getTodayPresention(DateTime.now());
                 await present.presentionCount();
               },
@@ -85,6 +85,13 @@ class _HomePageState extends State<HomePage> {
                                         '${Env.imageUrl}/${value.user!.avaPath!}',
                                         width: 100,
                                         height: 100,
+                                        errorBuilder:
+                                            (context, error, stackTrace) {
+                                          return const Icon(
+                                            Icons.account_circle_rounded,
+                                            size: 100,
+                                          );
+                                        },
                                       ),
                                     ),
                             ),
@@ -184,7 +191,7 @@ class _HomePageState extends State<HomePage> {
                                         : timeOut,
                                     caption: timeOut.contains('Belum')
                                         ? 'Tap untuk pulang'
-                                        : 'Anda Sudah Presen',
+                                        : 'OK',
                                     icon: Icons.logout_sharp,
                                     onTap: timeOut.contains('Belum')
                                         ? () {
@@ -336,8 +343,10 @@ class MainGridView extends StatelessWidget {
                     time,
                     style: time.contains(RegExp(r'[0-9]'))
                         ? style.textTheme.titleMedium
-                        : style.textTheme.titleSmall
-                            ?.copyWith(color: Colors.white),
+                        : style.textTheme.titleSmall?.copyWith(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 4,
                     textAlign: TextAlign.center,

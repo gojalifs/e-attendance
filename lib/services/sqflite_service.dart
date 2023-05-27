@@ -33,7 +33,7 @@ class SqfLiteService {
       var data = await db.rawQuery('SELECT * FROM user');
       return User.fromMap(data.first);
     } catch (e) {
-      rethrow;
+      throw 'No Data';
     }
   }
 
