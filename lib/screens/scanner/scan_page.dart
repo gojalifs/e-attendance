@@ -80,7 +80,7 @@ class _ScanPageState extends State<ScanPage> {
                             type = 'masuk';
                           } else if (code.contains('checkout') &&
                               widget.type == 'pulang') {
-                            type = 'keluar';
+                            type = 'pulang';
                           } else {
                             MotionToast.error(
                               description: const Text(
