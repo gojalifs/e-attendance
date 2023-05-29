@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:e_presention/env/env.dart';
 import 'package:e_presention/services/sqflite_service.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../data/models/presention.dart';
@@ -20,16 +21,20 @@ class ApiService {
   final _baseUrl = Env.url;
   // final _baseUrl = url;
   User _user = User();
+  String token = '';
 
   Map<String, String> _setHeader() {
     return {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${_user.token}',
+      'Authorization': 'Bearer ${token}',
     };
   }
 
   Future getUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    token = prefs.getString('token')!;
     _user = await SqfLiteService().getUser();
+    print('_user ${_user.toMap()}');
   }
 
   Future<User> login(String id, String password) async {
@@ -51,6 +56,10 @@ class ApiService {
         print(_user.toMap());
 
         SqfLiteService().saveUser(_user);
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('token', _user.token!);
+        print('token $token');
+
         await getUser();
         return _user;
       } else {
@@ -115,7 +124,7 @@ class ApiService {
         endPoint,
         headers: {
           'Accept': 'application/json',
-          'Authorization': 'Bearer ${_user.token}',
+          'Authorization': 'Bearer ${token}',
         },
         body: {
           'nik': _user.nik,
@@ -123,6 +132,7 @@ class ApiService {
         },
       );
       var data = jsonDecode(resp.body);
+      print(data);
 
       List result = data['data'];
       return result.map((e) => TodayPresention.fromMap(e)).toList();
@@ -162,7 +172,7 @@ class ApiService {
         ..fields['latitude'] = latitude
         ..files.add(await http.MultipartFile.fromPath('img', file.path))
         ..headers['Accept'] = 'application/json'
-        ..headers['Authorization'] = 'Bearer ${_user.token}';
+        ..headers['Authorization'] = 'Bearer ${token}';
 
       var resp = await request.send();
       var respBody = await http.Response.fromStream(resp);
@@ -183,6 +193,7 @@ class ApiService {
 
   Future<User> getProfile() async {
     try {
+      print('token $token');
       await getUser();
       String nik = _user.nik ?? '';
 
@@ -208,7 +219,7 @@ class ApiService {
     try {
       var resp = await http.post(endPoint, headers: {
         'Accept': 'application/json',
-        'Authorization': 'Bearer ${_user.token}',
+        'Authorization': 'Bearer ${token}',
       }, body: {
         'nik': _user.nik,
         'column': column,
@@ -237,7 +248,7 @@ class ApiService {
         ..fields['nik'] = _user.nik!
         ..files.add(await http.MultipartFile.fromPath('img', img.path))
         ..headers['Accept'] = 'application/json'
-        ..headers['Authorization'] = 'Bearer ${_user.token}';
+        ..headers['Authorization'] = 'Bearer ${token}';
 
       var resp = await request.send();
       var respBody = await http.Response.fromStream(resp);
@@ -374,7 +385,7 @@ class ApiService {
         ..files.add(await http.MultipartFile.fromPath('img', image.path))
         ..fields['alasan'] = reason
         ..headers['Accept'] = 'application/json'
-        ..headers['Authorization'] = 'Bearer ${_user.token}';
+        ..headers['Authorization'] = 'Bearer ${token}';
 
       var resp = await request.send();
       var respBody = await http.Response.fromStream(resp);
