@@ -37,13 +37,13 @@ class ApiService {
     print('_user ${_user.toMap()}');
   }
 
-  Future<User> login(String id, String password) async {
+  Future<User> login(String email, String password) async {
     var endpoint = Uri.parse('$_baseUrl/user/login');
 
     var resp = await http.post(endpoint, headers: {
       'Accept': 'application/json'
     }, body: {
-      'nik': id,
+      'email': email,
       'password': password,
     });
     print(resp.statusCode);
