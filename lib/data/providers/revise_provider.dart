@@ -21,12 +21,13 @@ class ReviseProvider extends ChangeNotifier {
   Future addRevise(DateTime date, TimeOfDay time, String reviseType,
       String reason, BuildContext context) async {
     String fDate = DateFormat('y-M-d').format(date);
-    String fTime = time.format(context);
+    final ftime = DateFormat('hh:mm a').parse(time.format(context));
+    final formattedTime24 = DateFormat('HH:mm:ss').format(ftime);
 
     _state = ConnectionState.active;
     notifyListeners();
     await _apiService
-        .presentionRevise(fDate, fTime, reviseType, reason, _image!)
+        .presentionRevise(fDate, formattedTime24, reviseType, reason, _image!)
         .whenComplete(() {
       _state = ConnectionState.done;
     });

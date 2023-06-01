@@ -9,7 +9,7 @@ import 'package:e_presention/utils/common_widget.dart';
 
 import '../../data/providers/auth_provider.dart';
 
-enum _RevisionGroup { masuk, keluar }
+enum _RevisionGroup { masuk, pulang }
 
 class RevisionPage extends StatefulWidget {
   static String routeName = '/revision';
@@ -154,7 +154,7 @@ class _RevisionPageState extends State<RevisionPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               const Expanded(
-                                  child: Text('Revisi masuk atau keluar?')),
+                                  child: Text('Revisi masuk atau pulang?')),
                               const SizedBox(width: 20),
                               Expanded(
                                 flex: 2,
@@ -177,7 +177,7 @@ class _RevisionPageState extends State<RevisionPage> {
                                     ),
                                     Expanded(
                                       child: RadioListTile(
-                                        value: _RevisionGroup.keluar,
+                                        value: _RevisionGroup.pulang,
                                         contentPadding: EdgeInsets.zero,
                                         title: const Text(
                                           'Pulang',
@@ -344,19 +344,24 @@ class _RevisionPageState extends State<RevisionPage> {
                                         String reviseType =
                                             revision.toString().split('.').last;
                                         await value
-                                            .addRevise(date, time, reviseType,
-                                                reasonController.text, context)
-                                            .then(
-                                              (value) => MotionToast.info(
-                                                description: const Text(
-                                                    'Sukses mengajukan revisi'),
-                                              ).show(context),
-                                            )
-                                            .onError((error, stackTrace) =>
-                                                MotionToast.error(
-                                                  description: Text(
-                                                      'Terjadi error $error'),
-                                                ).show(context));
+                                                .addRevise(
+                                                    date,
+                                                    time,
+                                                    reviseType,
+                                                    reasonController.text,
+                                                    context)
+                                                .then(
+                                                  (value) => MotionToast.info(
+                                                    description: const Text(
+                                                        'Sukses mengajukan revisi'),
+                                                  ).show(context),
+                                                )
+                                            // .onError((error, stackTrace) =>
+                                            //     MotionToast.error(
+                                            //       description: Text(
+                                            //           'Terjadi error $error'),
+                                            //     ).show(context));
+                                            ;
                                       }
                                       await value.fetchRevision();
                                     },

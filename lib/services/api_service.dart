@@ -390,6 +390,8 @@ class ApiService {
       var resp = await request.send();
       var respBody = await http.Response.fromStream(resp);
 
+      print('respbody ${request.fields}');
+
       if (respBody.statusCode == 401) {
         throw 'Unauthenticated';
       } else if (respBody.statusCode == 200 || respBody.statusCode == 201) {
