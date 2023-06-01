@@ -26,7 +26,7 @@ class ApiService {
   Map<String, String> _setHeader() {
     return {
       'Accept': 'application/json',
-      'Authorization': 'Bearer ${token}',
+      'Authorization': 'Bearer $token',
     };
   }
 
@@ -124,7 +124,7 @@ class ApiService {
         endPoint,
         headers: {
           'Accept': 'application/json',
-          'Authorization': 'Bearer ${token}',
+          'Authorization': 'Bearer $token',
         },
         body: {
           'nik': _user.nik,
@@ -172,7 +172,7 @@ class ApiService {
         ..fields['latitude'] = latitude
         ..files.add(await http.MultipartFile.fromPath('img', file.path))
         ..headers['Accept'] = 'application/json'
-        ..headers['Authorization'] = 'Bearer ${token}';
+        ..headers['Authorization'] = 'Bearer $token';
 
       var resp = await request.send();
       var respBody = await http.Response.fromStream(resp);
@@ -219,7 +219,7 @@ class ApiService {
     try {
       var resp = await http.post(endPoint, headers: {
         'Accept': 'application/json',
-        'Authorization': 'Bearer ${token}',
+        'Authorization': 'Bearer $token',
       }, body: {
         'nik': _user.nik,
         'column': column,
@@ -248,7 +248,7 @@ class ApiService {
         ..fields['nik'] = _user.nik!
         ..files.add(await http.MultipartFile.fromPath('img', img.path))
         ..headers['Accept'] = 'application/json'
-        ..headers['Authorization'] = 'Bearer ${token}';
+        ..headers['Authorization'] = 'Bearer $token';
 
       var resp = await request.send();
       var respBody = await http.Response.fromStream(resp);
@@ -385,8 +385,9 @@ class ApiService {
         ..files.add(await http.MultipartFile.fromPath('img', image.path))
         ..fields['alasan'] = reason
         ..headers['Accept'] = 'application/json'
-        ..headers['Authorization'] = 'Bearer ${token}';
+        ..headers['Authorization'] = 'Bearer $token';
 
+      print('request $request');
       var resp = await request.send();
       var respBody = await http.Response.fromStream(resp);
 
