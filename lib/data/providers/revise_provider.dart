@@ -21,8 +21,8 @@ class ReviseProvider extends ChangeNotifier {
   Future addRevise(DateTime date, TimeOfDay time, String reviseType,
       String reason, BuildContext context) async {
     String fDate = DateFormat('y-M-d').format(date);
-    final ftime = DateFormat('hh:mm a').parse(time.format(context));
-    final formattedTime24 = DateFormat('HH:mm:ss').format(ftime);
+    var fTime = DateFormat('HH:mm').parse(time.format(context));
+    final formattedTime24 = DateFormat('hh:mm:ss').format(fTime);
 
     _state = ConnectionState.active;
     notifyListeners();
@@ -30,6 +30,7 @@ class ReviseProvider extends ChangeNotifier {
         .presentionRevise(fDate, formattedTime24, reviseType, reason, _image!)
         .whenComplete(() {
       _state = ConnectionState.done;
+      _image = null;
     });
     _state = ConnectionState.done;
     notifyListeners();

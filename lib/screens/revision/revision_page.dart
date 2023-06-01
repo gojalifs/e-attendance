@@ -329,10 +329,6 @@ class _RevisionPageState extends State<RevisionPage> {
                               onPressed: value.state == ConnectionState.active
                                   ? null
                                   : () async {
-                                      // await apiService.getUser();
-                                      // if (!mounted) {
-                                      //   return;
-                                      // }
                                       if (value.images == null) {
                                         MotionToast.warning(
                                           description: const Text(
@@ -344,25 +340,26 @@ class _RevisionPageState extends State<RevisionPage> {
                                         String reviseType =
                                             revision.toString().split('.').last;
                                         await value
-                                                .addRevise(
-                                                    date,
-                                                    time,
-                                                    reviseType,
-                                                    reasonController.text,
-                                                    context)
-                                                .then(
-                                                  (value) => MotionToast.info(
-                                                    description: const Text(
-                                                        'Sukses mengajukan revisi'),
-                                                  ).show(context),
-                                                )
-                                            // .onError((error, stackTrace) =>
-                                            //     MotionToast.error(
-                                            //       description: Text(
-                                            //           'Terjadi error $error'),
-                                            //     ).show(context));
-                                            ;
+                                            .addRevise(date, time, reviseType,
+                                                reasonController.text, context)
+                                            .then(
+                                              (value) => MotionToast.info(
+                                                description: const Text(
+                                                    'Sukses mengajukan revisi'),
+                                              ).show(context),
+                                            )
+                                            .onError(
+                                              (error, stackTrace) =>
+                                                  MotionToast.error(
+                                                description: Text(
+                                                    'Terjadi error $error'),
+                                              ).show(context),
+                                            );
                                       }
+                                      formKey.currentState!.reset();
+                                      setState(() {
+                                        box = false;
+                                      });
                                       await value.fetchRevision();
                                     },
                               child: value.state == ConnectionState.active

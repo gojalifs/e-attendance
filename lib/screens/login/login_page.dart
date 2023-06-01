@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: TextFormField(
                           controller: nikController,
                           textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.number,
+                          keyboardType: TextInputType.emailAddress,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
                               return 'Tidak boleh kosong';
@@ -58,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           style: const TextStyle(fontSize: 15),
                           decoration: const InputDecoration(
-                            labelText: 'No. ID',
+                            labelText: 'E-Mail',
                           ),
                         ),
                       ),
