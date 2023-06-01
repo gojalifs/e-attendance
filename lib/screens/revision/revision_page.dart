@@ -9,7 +9,7 @@ import 'package:e_presention/utils/common_widget.dart';
 
 import '../../data/providers/auth_provider.dart';
 
-enum _RevisionGroup { masuk, keluar }
+enum _RevisionGroup { masuk, pulang }
 
 class RevisionPage extends StatefulWidget {
   static String routeName = '/revision';
@@ -177,7 +177,7 @@ class _RevisionPageState extends State<RevisionPage> {
                                     ),
                                     Expanded(
                                       child: RadioListTile(
-                                        value: _RevisionGroup.keluar,
+                                        value: _RevisionGroup.pulang,
                                         contentPadding: EdgeInsets.zero,
                                         title: const Text(
                                           'Pulang',
