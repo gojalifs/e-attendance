@@ -35,334 +35,343 @@ class _LeavePageState extends State<LeavePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ketidakhadiran Anda'),
-      ),
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async {
-            await Provider.of<LeaveProvider>(context, listen: false)
-                .fetchLeave();
-          },
-          child: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            children: [
-              Consumer<AuthProvider>(
-                builder: (context, value, child) => BiodataWidget(
-                  title: 'Nama',
-                  subtitle: value.user!.nama!,
-                  column: '',
-                  isProfilePage: false,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Ketidakhadiran Anda'),
+        ),
+        body: SafeArea(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              await Provider.of<LeaveProvider>(context, listen: false)
+                  .fetchLeave();
+            },
+            child: ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              children: [
+                Consumer<AuthProvider>(
+                  builder: (context, value, child) => BiodataWidget(
+                    title: 'Nama',
+                    subtitle: value.user!.nama!,
+                    column: '',
+                    isProfilePage: false,
+                  ),
                 ),
-              ),
-              Consumer<AuthProvider>(
-                builder: (context, value, child) => BiodataWidget(
-                  title: 'HP',
-                  subtitle: value.user!.telp!,
-                  column: '',
-                  isProfilePage: false,
+                Consumer<AuthProvider>(
+                  builder: (context, value, child) => BiodataWidget(
+                    title: 'HP',
+                    subtitle: value.user!.telp!,
+                    column: '',
+                    isProfilePage: false,
+                  ),
                 ),
-              ),
-              CheckboxListTile(
-                title: Text(
-                  'Ajukan Baru',
-                  style: Theme.of(context).textTheme.titleSmall,
+                CheckboxListTile(
+                  title: Text(
+                    'Ajukan Baru',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  value: box,
+                  onChanged: (value) {
+                    box = !box;
+                    setState(() {});
+                  },
                 ),
-                value: box,
-                onChanged: (value) {
-                  box = !box;
-                  setState(() {});
-                },
-              ),
-              if (box)
-                AnimatedOpacity(
-                  opacity: box ? 1 : 0,
-                  duration: const Duration(milliseconds: 5000),
-                  child: Consumer<LeaveProvider>(
-                    builder: (context, exit, child) => Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            const Expanded(
-                                flex: 1, child: Text('Pilih Tanggal Mulai')),
-                            Expanded(
-                              flex: 1,
-                              child: InkWell(
-                                onTap: () async {
-                                  DateTime newDate = (await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(2023),
-                                        lastDate: DateTime(DateTime.now().year,
-                                            DateTime.now().month + 3),
-                                      )) ??
-                                      date;
+                if (box)
+                  AnimatedOpacity(
+                    opacity: box ? 1 : 0,
+                    duration: const Duration(milliseconds: 5000),
+                    child: Consumer<LeaveProvider>(
+                      builder: (context, exit, child) => Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Expanded(
+                                  flex: 1, child: Text('Pilih Tanggal Mulai')),
+                              Expanded(
+                                flex: 1,
+                                child: InkWell(
+                                  onTap: () async {
+                                    DateTime newDate = (await showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(2023),
+                                          lastDate: DateTime(
+                                              DateTime.now().year,
+                                              DateTime.now().month + 3),
+                                        )) ??
+                                        date;
 
-                                  if (newDate != date) {
-                                    date = newDate;
-                                  }
+                                    if (newDate != date) {
+                                      date = newDate;
+                                    }
 
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  // width: 200,
-                                  height: 40,
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.rectangle,
-                                    border: Border.all(),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        DateFormat.yMMMMd('id_ID').format(date),
-                                        style: const TextStyle(fontSize: 17),
-                                      ),
-                                      const IconButton(
-                                        onPressed: null,
-                                        icon: Icon(
-                                          Icons.edit_calendar_rounded,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            const Expanded(
-                                child: Text('Pilih Tanggal Selesai')),
-                            Expanded(
-                              child: InkWell(
-                                onTap: () async {
-                                  DateTime newDate = (await showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(2023),
-                                        lastDate: DateTime(DateTime.now().year,
-                                            DateTime.now().month + 3),
-                                      )) ??
-                                      endDate;
-
-                                  if (newDate != endDate) {
-                                    endDate = newDate;
-                                  }
-                                  setState(() {});
-                                },
-                                child: Container(
-                                  width: 200,
-                                  height: 40,
-                                  margin:
-                                      const EdgeInsets.symmetric(vertical: 10),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(),
-                                    shape: BoxShape.rectangle,
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Text(
+                                    setState(() {});
+                                  },
+                                  child: Container(
+                                    // width: 200,
+                                    height: 40,
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.rectangle,
+                                      border: Border.all(),
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
                                           DateFormat.yMMMMd('id_ID')
-                                              .format(endDate),
+                                              .format(date),
                                           style: const TextStyle(fontSize: 17),
                                         ),
-                                      ),
-                                      const IconButton(
-                                        onPressed: null,
-                                        icon: Icon(
-                                          Icons.edit_calendar_rounded,
+                                        const IconButton(
+                                          onPressed: null,
+                                          icon: Icon(
+                                            Icons.edit_calendar_rounded,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        CheckboxListTile(
-                          title: Text(
-                            'Potong Cuti',
-                            style: Theme.of(context).textTheme.titleSmall,
+                            ],
                           ),
-                          value: isPaidLeave,
-                          onChanged: (value) {
-                            isPaidLeave = !isPaidLeave;
-                            setState(() {});
-                          },
-                        ),
-                        Row(
-                          children: [
-                            const Expanded(child: Text('Jenis Cuti')),
-                            DropdownButton(
-                              value: dropDownValue,
-                              style: const TextStyle(
-                                fontSize: 17,
-                                color: Colors.black,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              const Expanded(
+                                  child: Text('Pilih Tanggal Selesai')),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: () async {
+                                    DateTime newDate = (await showDatePicker(
+                                          context: context,
+                                          initialDate: DateTime.now(),
+                                          firstDate: DateTime(2023),
+                                          lastDate: DateTime(
+                                              DateTime.now().year,
+                                              DateTime.now().month + 3),
+                                        )) ??
+                                        endDate;
+
+                                    if (newDate != endDate) {
+                                      endDate = newDate;
+                                    }
+                                    setState(() {});
+                                  },
+                                  child: Container(
+                                    width: 200,
+                                    height: 40,
+                                    margin: const EdgeInsets.symmetric(
+                                        vertical: 10),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(),
+                                      shape: BoxShape.rectangle,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Expanded(
+                                          child: Text(
+                                            DateFormat.yMMMMd('id_ID')
+                                                .format(endDate),
+                                            style:
+                                                const TextStyle(fontSize: 17),
+                                          ),
+                                        ),
+                                        const IconButton(
+                                          onPressed: null,
+                                          icon: Icon(
+                                            Icons.edit_calendar_rounded,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
-                              onChanged: (value) {
-                                dropDownValue = value ?? '';
-                                setState(() {});
-                              },
-                              items: const [
-                                DropdownMenuItem(
-                                  value: 'Biasa/Tahunan',
-                                  child: Text('Biasa/Tahunan'),
-                                ),
-                                DropdownMenuItem(
-                                  value: 'Nikah',
-                                  child: Text('Nikah'),
-                                ),
-                                DropdownMenuItem(
-                                  value: 'Melahirkan',
-                                  child: Text('Melahirkan'),
-                                ),
-                              ],
+                            ],
+                          ),
+                          CheckboxListTile(
+                            title: Text(
+                              'Potong Cuti',
+                              style: Theme.of(context).textTheme.titleSmall,
                             ),
-                          ],
-                        ),
-                        const SizedBox(height: 10),
-                        Form(
-                          key: formKey,
-                          child: TextFormField(
-                            controller: reasonController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              labelText: 'Alasan',
-                              alignLabelWithHint: true,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Tidak boleh kosong';
-                              }
-                              return null;
+                            value: isPaidLeave,
+                            onChanged: (value) {
+                              isPaidLeave = !isPaidLeave;
+                              setState(() {});
                             },
-                            maxLines: 5,
-                            style: const TextStyle(fontSize: 17),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            ElevatedButton(
-                              onPressed: () async {
-                                if (formKey.currentState!.validate()) {
-                                  await exit
-                                      .uploadCreateLeave(
-                                          date,
-                                          endDate,
-                                          isPaidLeave,
-                                          reasonController.text,
-                                          dropDownValue)
-                                      .then(
-                                    (value) {
-                                      reasonController.clear();
-                                      MotionToast.success(
-                                        description: const Text(
-                                            'Sukses mengajukan Cuti/informasi tidak hadir'),
-                                      ).show(context);
-                                      box = !box;
-                                      setState(() {});
-                                    },
-                                  );
-                                  await exit.fetchLeave();
-                                }
-                              },
-                              child: const Text('Ajukan'),
-                            ),
-                            const SizedBox(
-                              width: 20,
-                            ),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.red,
+                          Row(
+                            children: [
+                              const Expanded(child: Text('Jenis Cuti')),
+                              DropdownButton(
+                                value: dropDownValue,
+                                style: const TextStyle(
+                                  fontSize: 17,
+                                  color: Colors.black,
+                                ),
+                                onChanged: (value) {
+                                  dropDownValue = value ?? '';
+                                  setState(() {});
+                                },
+                                items: const [
+                                  DropdownMenuItem(
+                                    value: 'Biasa/Tahunan',
+                                    child: Text('Biasa/Tahunan'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Nikah',
+                                    child: Text('Nikah'),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: 'Melahirkan',
+                                    child: Text('Melahirkan'),
+                                  ),
+                                ],
                               ),
-                              onPressed: () {
-                                box = !box;
-                                setState(() {});
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Form(
+                            key: formKey,
+                            child: TextFormField(
+                              controller: reasonController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                labelText: 'Alasan',
+                                alignLabelWithHint: true,
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'Tidak boleh kosong';
+                                }
+                                return null;
                               },
-                              child: const Text('Batal'),
+                              maxLines: 5,
+                              style: const TextStyle(fontSize: 17),
                             ),
-                          ],
-                        ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  if (formKey.currentState!.validate()) {
+                                    await exit
+                                        .uploadCreateLeave(
+                                            date,
+                                            endDate,
+                                            isPaidLeave,
+                                            reasonController.text,
+                                            dropDownValue)
+                                        .then(
+                                      (value) {
+                                        reasonController.clear();
+                                        MotionToast.success(
+                                          description: const Text(
+                                              'Sukses mengajukan Cuti/informasi tidak hadir'),
+                                        ).show(context);
+                                        box = !box;
+                                        setState(() {});
+                                      },
+                                    );
+                                    await exit.fetchLeave();
+                                  }
+                                },
+                                child: const Text('Ajukan'),
+                              ),
+                              const SizedBox(
+                                width: 20,
+                              ),
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                ),
+                                onPressed: () {
+                                  box = !box;
+                                  setState(() {});
+                                },
+                                child: const Text('Batal'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                else
+                  const Text(
+                    '''Silahkan tekan kotak di atas untuk mengajukan '''
+                    '''permintaan Cuti/informasi tidak hadir yang baru''',
+                    style: TextStyle(color: Colors.black26),
+                  ),
+                CustomWidget.divider,
+                const Text(
+                  'Riwayat Cuti/informasi tidak hadir Anda',
+                  textAlign: TextAlign.center,
+                ),
+                Consumer<LeaveProvider>(
+                  builder: (context, leave, child) => SingleChildScrollView(
+                    primary: false,
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                      columns: const [
+                        DataColumn(label: Text('')),
+                        DataColumn(label: Text('ID')),
+                        DataColumn(label: Text('Tanggal Mulai')),
+                        DataColumn(label: Text('Tanggal Selesai')),
+                        DataColumn(label: Text('Alasan')),
+                        DataColumn(label: Text('Potong Cuti')),
+                        DataColumn(label: Text('Jenis Cuti')),
+                        DataColumn(label: Text('Status')),
                       ],
+                      rows: leave.leave.map(
+                        (e) {
+                          String status = e.status == 0
+                              ? 'Belum Disetujui'
+                              : e.status == 1
+                                  ? 'Disetujui'
+                                  : 'Ditolak';
+                          return DataRow(cells: [
+                            DataCell(Icon(
+                              Icons.done_all_rounded,
+                              color: e.status == 1 ? Colors.green : Colors.red,
+                            )),
+                            DataCell(Text('${e.id!}')),
+                            DataCell(Text(e.date!)),
+                            DataCell(Text(e.endDate ?? '-')),
+                            DataCell(Text(e.alasan!)),
+                            DataCell(Text(e.potongCuti!)),
+                            DataCell(Text(e.jenisCuti!)),
+                            DataCell(Text(status)),
+                          ]);
+                        },
+                      ).toList(),
                     ),
                   ),
                 )
-              else
-                const Text(
-                  '''Silahkan tekan kotak di atas untuk mengajukan '''
-                  '''permintaan Cuti/informasi tidak hadir yang baru''',
-                  style: TextStyle(color: Colors.black26),
-                ),
-              CustomWidget.divider,
-              const Text(
-                'Riwayat Cuti/informasi tidak hadir Anda',
-                textAlign: TextAlign.center,
-              ),
-              Consumer<LeaveProvider>(
-                builder: (context, leave, child) => SingleChildScrollView(
-                  primary: false,
-                  scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    columns: const [
-                      DataColumn(label: Text('')),
-                      DataColumn(label: Text('ID')),
-                      DataColumn(label: Text('Tanggal Mulai')),
-                      DataColumn(label: Text('Tanggal Selesai')),
-                      DataColumn(label: Text('Alasan')),
-                      DataColumn(label: Text('Potong Cuti')),
-                      DataColumn(label: Text('Jenis Cuti')),
-                      DataColumn(label: Text('Status')),
-                    ],
-                    rows: leave.leave.map(
-                      (e) {
-                        String status = e.status == 0
-                            ? 'Belum Disetujui'
-                            : e.status == 1
-                                ? 'Disetujui'
-                                : 'Ditolak';
-                        return DataRow(cells: [
-                          DataCell(Icon(
-                            Icons.done_all_rounded,
-                            color: e.status == 1 ? Colors.green : Colors.red,
-                          )),
-                          DataCell(Text('${e.id!}')),
-                          DataCell(Text(e.date!)),
-                          DataCell(Text(e.endDate ?? '-')),
-                          DataCell(Text(e.alasan!)),
-                          DataCell(Text(e.potongCuti!)),
-                          DataCell(Text(e.jenisCuti!)),
-                          DataCell(Text(status)),
-                        ]);
-                      },
-                    ).toList(),
-                  ),
-                ),
-              )
-            ],
+              ],
+            ),
           ),
         ),
       ),

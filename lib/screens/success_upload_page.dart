@@ -1,16 +1,15 @@
 import 'dart:io';
 
-import 'package:e_presention/data/providers/presention_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 
-import 'package:e_presention/data/providers/auth_provider.dart';
-import 'package:e_presention/data/providers/photo_provider.dart';
-import 'package:e_presention/utils/common_widget.dart';
-
+import '../data/providers/auth_provider.dart';
+import '../data/providers/photo_provider.dart';
+import '../data/providers/presention_provider.dart';
 import '../env/env.dart';
+import '../utils/common_widget.dart';
 
 class SuccessPage extends StatelessWidget {
   static const routeName = '/success_page';

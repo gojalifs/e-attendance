@@ -10,7 +10,6 @@ import 'package:e_presention/env/env.dart';
 import 'package:e_presention/services/sqflite_service.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 
 import '../data/models/presention.dart';
 import '../data/models/revision.dart';
@@ -34,7 +33,6 @@ class ApiService {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     token = prefs.getString('token')!;
     _user = await SqfLiteService().getUser();
-    print('_user ${_user.toMap()}');
   }
 
   Future<User> login(String email, String password) async {
@@ -46,24 +44,26 @@ class ApiService {
       'email': email,
       'password': password,
     });
-    print(resp.statusCode);
     try {
       if (resp.statusCode == 200) {
         Map<String, dynamic> data = jsonDecode(resp.body)['data'];
-        print(jsonDecode(resp.body));
         data['isLoggedIn'] = 1;
         _user = User.fromMap(data);
-        print(_user.toMap());
 
         SqfLiteService().saveUser(_user);
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('token', _user.token!);
-        print('token $token');
 
         await getUser();
         return _user;
       } else {
-        throw Exception();
+        if (resp.statusCode == 401 || resp.statusCode == 302) {
+          throw 'Password Salah';
+        } else if (resp.statusCode == 500) {
+          throw 'error on server';
+        } else {
+          throw 'error';
+        }
       }
     } catch (e) {
       throw 'failed login, $e';
@@ -83,7 +83,6 @@ class ApiService {
         endPoint,
         headers: _setHeader(),
       );
-      print(resp.body);
       if (resp.statusCode == 200) {
         return true;
       } else {
@@ -132,7 +131,6 @@ class ApiService {
         },
       );
       var data = jsonDecode(resp.body);
-      print(data);
 
       List result = data['data'];
       return result.map((e) => TodayPresention.fromMap(e)).toList();
@@ -153,7 +151,6 @@ class ApiService {
       var resp = await http
           .post(endPoint, headers: _setHeader(), body: {'nik': _user.nik});
       var data = jsonDecode(resp.body);
-      print('data $data');
       return data['data'];
     } catch (e) {
       rethrow;
@@ -193,14 +190,12 @@ class ApiService {
 
   Future<User> getProfile() async {
     try {
-      print('token $token');
       await getUser();
       String nik = _user.nik ?? '';
 
       var endPoint = Uri.parse('$_baseUrl/user/data/$nik');
       var resp = await http.get(endPoint, headers: _setHeader());
       Map<String, dynamic> result = jsonDecode(resp.body);
-      print(result);
       User user = User.fromMap(result);
       SqfLiteService().updateUser(user);
       return user;
@@ -228,7 +223,6 @@ class ApiService {
 
       Map<String, dynamic> result = jsonDecode(resp.body);
       User user = User.fromMap(result['data']);
-      print(user);
       SqfLiteService().updateUser(user);
       return user;
     } on FormatException {
@@ -252,7 +246,6 @@ class ApiService {
 
       var resp = await request.send();
       var respBody = await http.Response.fromStream(resp);
-      print(respBody.body);
       Map<String, dynamic> result = jsonDecode(respBody.body);
       _user = User.fromMap(result['data']);
       await SqfLiteService().updateUser(_user);
@@ -361,7 +354,6 @@ class ApiService {
 
     var resp = await http.get(endPoint, headers: _setHeader());
     Map<String, dynamic> data = jsonDecode(resp.body);
-    print(data);
     List list = data['data'];
     List<PaidLeave> result = list.map((e) => PaidLeave.fromMap(e)).toList();
     return result;
@@ -387,32 +379,20 @@ class ApiService {
         ..headers['Accept'] = 'application/json'
         ..headers['Authorization'] = 'Bearer $token';
 
-      print('request $request');
       var resp = await request.send();
       var respBody = await http.Response.fromStream(resp);
-
-      print('respbody ${request.fields}');
 
       if (respBody.statusCode == 401) {
         throw 'Unauthenticated';
       } else if (respBody.statusCode == 200 || respBody.statusCode == 201) {
         Map<String, dynamic> data = jsonDecode(respBody.body);
-        print(data['data']);
         return data['data'];
       } else {
         throw 'Something error';
       }
-    } catch (e) {}
-    var resp = await http.post(endPoint, headers: _setHeader(), body: {
-      'user_nik': _user.nik,
-      'tanggal': date,
-      'jam': time,
-      'yang_direvisi': revised,
-      'alasan': reason,
-    });
-    Map<String, dynamic> data = jsonDecode(resp.body);
-    var result = data['data'];
-    return result;
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<List<Revisi>> fetchRevision() async {
@@ -421,7 +401,6 @@ class ApiService {
 
     var resp = await http.get(endPoint, headers: _setHeader());
     Map<String, dynamic> data = jsonDecode(resp.body);
-    print(data);
     List list = data['data'];
     List<Revisi> result = list.map((e) => Revisi.fromMap(e)).toList();
     return result;
@@ -438,7 +417,6 @@ class ApiService {
           'Authorization': 'Bearer $token',
         },
       );
-      print(resp.body);
       if (resp.statusCode == 500 || resp.statusCode == 401) {
         throw Exception('unauthorized');
       }

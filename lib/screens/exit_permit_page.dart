@@ -199,6 +199,7 @@ class _ExitPermitPageState extends State<ExitPermitPage> {
                                                   'Sukses mengajukan izin keluar'),
                                             ).show(context);
                                             box = !box;
+                                            formKey.currentState!.reset();
                                             setState(() {});
                                           },
                                         );

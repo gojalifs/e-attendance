@@ -1,11 +1,8 @@
 import 'package:e_presention/data/providers/auth_provider.dart';
-import 'package:e_presention/data/providers/presention_provider.dart';
 import 'package:e_presention/helper/database_helper.dart';
 import 'package:e_presention/screens/home/home_page.dart';
 import 'package:e_presention/screens/login/login_page.dart';
-import 'package:e_presention/services/api_service.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class CustomSplashScreen extends StatefulWidget {
@@ -37,7 +34,6 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> {
       if (!mounted) {
         return;
       }
-      print(e);
 
       Navigator.pushReplacementNamed(context, LoginPage.routeName);
     }

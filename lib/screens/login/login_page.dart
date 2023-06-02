@@ -1,5 +1,7 @@
 import 'package:e_presention/helper/database_helper.dart';
+import 'package:e_presention/screens/reset_password/reset_webview.dart';
 import 'package:flutter/material.dart';
+import 'package:motion_toast/motion_toast.dart';
 import 'package:provider/provider.dart';
 import '../../data/providers/auth_provider.dart';
 import '../../data/providers/presention_provider.dart';
@@ -97,26 +99,31 @@ class _LoginPageState extends State<LoginPage> {
                         alignment: Alignment.centerRight,
                         child: TextButton(
                           onPressed: () {
-                            showDialog(
-                              context: context,
+                            Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) {
-                                return AlertDialog(
-                                  actions: [
-                                    TextButton(
-                                        onPressed: () {
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: const Text('OK'))
-                                  ],
-                                  content: const Text(
-                                    'Silahkan hubungi admin untuk mengubah kata sandi anda',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                );
+                                return const ResetWebView();
                               },
-                            );
+                            ));
+                            // showDialog(
+                            //   context: context,
+                            //   builder: (context) {
+                            //     return AlertDialog(
+                            //       actions: [
+                            //         TextButton(
+                            //             onPressed: () {
+                            //               Navigator.of(context).pop();
+                            //             },
+                            //             child: const Text('OK'))
+                            //       ],
+                            //       content: const Text(
+                            //         'Silahkan hubungi admin untuk mengubah kata sandi anda',
+                            //         style: TextStyle(
+                            //           fontSize: 15,
+                            //         ),
+                            //       ),
+                            //     );
+                            //   },
+                            // );
                           },
                           child: const Text('Lupa Kata Sandi'),
                         ),
@@ -139,17 +146,17 @@ class _LoginPageState extends State<LoginPage> {
                                         (_) => Navigator.of(context)
                                             .pushReplacementNamed(
                                                 HomePage.routeName),
-                                        // )
-                                        // .onError(
-                                        //   (error, stackTrace) {
-                                        //     return MotionToast.warning(
-                                        //       title: const Text('Login Failed'),
-                                        //       description: Text(
-                                        //         error.toString(),
-                                        //       ),
-                                        //     ).show(context);
-                                        //   },
-                                      );
+                                      )
+                                      .onError(
+                                    (error, stackTrace) {
+                                      return MotionToast.warning(
+                                        title: const Text('Login Failed'),
+                                        description: Text(
+                                          error.toString(),
+                                        ),
+                                      ).show(context);
+                                    },
+                                  );
                                 }
                               }
 

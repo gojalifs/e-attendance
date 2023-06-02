@@ -4,11 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../data/providers/auth_provider.dart';
 
-/// TODO delete this
-// String tempUrl = 'http://192.168.165.241/storage';
-// String url = 'http://192.168.46.241:81/api';
-// String imageUrl = 'http://192.168.46.241:81/storage';
-
 class CustomWidget {
   static Widget divider = const Divider(
     thickness: 2,

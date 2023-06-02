@@ -25,7 +25,6 @@ class _ScanPageState extends State<ScanPage> {
   Position? location;
   @override
   void initState() {
-    print('type ${widget.type}');
     getLocation();
     super.initState();
   }
@@ -74,7 +73,6 @@ class _ScanPageState extends State<ScanPage> {
                           final List<Barcode> barcodes = capture.barcodes;
                           String type = '';
                           String code = barcodes.first.rawValue!;
-                          print('code $code');
 
                           /// Check for qrcode value
                           if (code.contains('checkin') &&
