@@ -1,3 +1,4 @@
+import 'package:e_presention/env/env.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
@@ -9,6 +10,7 @@ class ResetWebView extends StatefulWidget {
 }
 
 class _ResetWebViewState extends State<ResetWebView> {
+  String urls = Env.url.substring(0, Env.url.lastIndexOf('/'));
   var controller = WebViewController()
     ..setJavaScriptMode(JavaScriptMode.unrestricted)
     ..setBackgroundColor(const Color(0x00000000))
@@ -28,10 +30,12 @@ class _ResetWebViewState extends State<ResetWebView> {
         },
       ),
     )
-    ..loadRequest(Uri.parse('http://192.168.165.22:8000/password/reset'));
+    ..loadRequest(Uri.parse(
+        '${Env.url.substring(0, Env.url.lastIndexOf('/'))}/password/reset'));
 
   @override
   Widget build(BuildContext context) {
+    print(urls);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Reset Kata Sandi'),
