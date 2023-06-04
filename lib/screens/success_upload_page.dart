@@ -13,7 +13,12 @@ import '../utils/common_widget.dart';
 
 class SuccessPage extends StatelessWidget {
   static const routeName = '/success_page';
-  const SuccessPage({super.key});
+  final String type;
+
+  const SuccessPage({
+    Key? key,
+    required this.type,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +33,9 @@ class SuccessPage extends StatelessWidget {
           Navigator.of(context).popUntil((route) => route.isFirst);
           return false;
         },
-        child: SuccessScanPage(),
+        child: SuccessScanPage(
+          check: type,
+        ),
       ),
     );
   }

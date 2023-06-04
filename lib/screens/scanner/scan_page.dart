@@ -153,8 +153,12 @@ class _ScanPageState extends State<ScanPage> {
                                 return null;
                               }
 
-                              return Navigator.pushNamedAndRemoveUntil(context,
-                                  SuccessPage.routeName, (route) => true);
+                              return Navigator.pushNamedAndRemoveUntil(
+                                context,
+                                SuccessPage.routeName,
+                                (route) => true,
+                                arguments: type,
+                              );
                             },
                           ).onError(
                             (error, stackTrace) {

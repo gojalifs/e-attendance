@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
       routes: {
         LoginPage.routeName: (context) => const LoginPage(),
         HomePage.routeName: (context) => const HomePage(),
-        SuccessPage.routeName: (context) => const SuccessPage(),
+        // SuccessPage.routeName: (context) => const SuccessPage(),
         ProfilePage.routeName: (context) => ProfilePage(),
         ReportPage.routeName: (context) => const ReportPage(),
         ExitPermitPage.routeName: (context) => const ExitPermitPage(),
@@ -84,6 +84,16 @@ class MyApp extends StatelessWidget {
           return MaterialPageRoute(
             builder: (context) {
               return ScanPage(
+                type: args,
+              );
+            },
+          );
+        }
+        if (settings.name == SuccessPage.routeName) {
+          final args = settings.arguments as String;
+          return MaterialPageRoute(
+            builder: (context) {
+              return SuccessPage(
                 type: args,
               );
             },
