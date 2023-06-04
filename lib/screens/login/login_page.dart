@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
                 Image.asset('assets/images/logo-smp.png'),
                 const SizedBox(height: 20),
                 Text(
-                  'Login e-Presensi\nSMP N 1 Karangbahagia',
+                  'Login E-Presensi\nSMPN 1 Karang Bahagia',
                   style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                         color: Colors.black,
                         fontSize: 25,
