@@ -30,6 +30,7 @@ class _ScanPageState extends State<ScanPage> {
   }
 
   getLocation() async {
+    Provider.of<PresentProvider>(context, listen: false).initScan();
     location =
         await Provider.of<PhotoProvider>(context, listen: false).getLocation();
   }

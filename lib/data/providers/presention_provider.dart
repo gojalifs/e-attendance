@@ -19,6 +19,11 @@ class PresentProvider with ChangeNotifier {
   List<TodayPresention> get todayReports => _todayReports;
   int get count => _count;
 
+  void initScan() {
+    _state = ConnectionState.none;
+    notifyListeners();
+  }
+
   Future getPresention(String nik, String token) async {
     _state = ConnectionState.active;
     _presention = await apiService.getPresention().whenComplete(() {
