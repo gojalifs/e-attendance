@@ -56,7 +56,8 @@ class _ScanPageState extends State<ScanPage> {
                 height: 0.6 * MediaQuery.of(context).size.height,
                 child: Consumer<PhotoProvider>(
                   builder: (context, scan, child) {
-                    if (scan.state == ConnectionState.waiting) {
+                    if (scan.state == ConnectionState.waiting ||
+                        scan.state == ConnectionState.done) {
                       return const Center(
                         child: Text('Uploading'),
                       );
@@ -142,7 +143,6 @@ class _ScanPageState extends State<ScanPage> {
                               );
                             },
                           );
-
                           await scan.sendPresention(type).then(
                             (value) async {
                               Navigator.of(context).pop();
@@ -153,10 +153,9 @@ class _ScanPageState extends State<ScanPage> {
                                 return null;
                               }
 
-                              return Navigator.pushNamedAndRemoveUntil(
+                              return Navigator.pushReplacementNamed(
                                 context,
                                 SuccessPage.routeName,
-                                (route) => true,
                                 arguments: type,
                               );
                             },
@@ -182,7 +181,7 @@ class _ScanPageState extends State<ScanPage> {
                           },
                           child: const Text(
                             '''Aplikasi ini membutuhkan akses lokasi yang '''
-                            '''presisi dan kamera. Tekan untuk meminta akses lokasi.''',
+                            '''presisi dan kamera. Tekan untuk meminta akses lokasi/kamera.''',
                             textAlign: TextAlign.justify,
                           ),
                         ),
