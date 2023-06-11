@@ -90,10 +90,10 @@ class PhotoProvider extends ChangeNotifier {
     Map<String, dynamic> resp = await apiService
         .uploadPresent(type, long, lat, _image!)
         .whenComplete(() {
-      _state = ConnectionState.done;
+      _state = ConnectionState.none;
     });
     _detail = PresentionDetail.fromMap(resp);
-    _state = ConnectionState.done;
+    _state = ConnectionState.none;
 
     notifyListeners();
   }

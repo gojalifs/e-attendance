@@ -165,7 +165,7 @@ class _ScanPageState extends State<ScanPage> {
                               Provider.of<PresentProvider>(context,
                                           listen: false)
                                       .state ==
-                                  ConnectionState.done;
+                                  ConnectionState.none;
                               return MotionToast.error(
                                 description:
                                     const Text('Something Error Happened'),
