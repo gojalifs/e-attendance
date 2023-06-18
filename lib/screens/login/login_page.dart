@@ -44,134 +44,139 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 100),
                 Form(
                   key: formKey,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 60,
-                        child: TextFormField(
-                          controller: nikController,
-                          textInputAction: TextInputAction.next,
-                          keyboardType: TextInputType.emailAddress,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Tidak boleh kosong';
-                            }
-                            return null;
-                          },
-                          style: const TextStyle(fontSize: 15),
-                          decoration: const InputDecoration(
-                            labelText: 'E-Mail',
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      SizedBox(
-                        height: 60,
-                        child: TextFormField(
-                          controller: passController,
-                          textInputAction: TextInputAction.go,
-                          onFieldSubmitted: (value) {
-                            FocusScope.of(context).unfocus();
-                          },
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Tidak boleh kosong';
-                            }
-                            return null;
-                          },
-                          obscureText: isVisible,
-                          style: const TextStyle(fontSize: 15),
-                          decoration: InputDecoration(
-                            labelText: 'Password',
-                            suffixIcon: IconButton(
-                              onPressed: () {
-                                isVisible = !isVisible;
-                                setState(() {});
-                              },
-                              icon: isVisible
-                                  ? const Icon(Icons.visibility)
-                                  : const Icon(Icons.visibility_off),
+                  child: AutofillGroup(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 60,
+                          child: TextFormField(
+                            controller: nikController,
+                            textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.emailAddress,
+                            autofillHints: const [AutofillHints.email],
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Tidak boleh kosong';
+                              }
+                              return null;
+                            },
+                            style: const TextStyle(fontSize: 15),
+                            decoration: const InputDecoration(
+                              labelText: 'E-Mail',
                             ),
                           ),
                         ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) {
-                                return const ResetWebView();
-                              },
-                            ));
-                            // showDialog(
-                            //   context: context,
-                            //   builder: (context) {
-                            //     return AlertDialog(
-                            //       actions: [
-                            //         TextButton(
-                            //             onPressed: () {
-                            //               Navigator.of(context).pop();
-                            //             },
-                            //             child: const Text('OK'))
-                            //       ],
-                            //       content: const Text(
-                            //         'Silahkan hubungi admin untuk mengubah kata sandi anda',
-                            //         style: TextStyle(
-                            //           fontSize: 15,
-                            //         ),
-                            //       ),
-                            //     );
-                            //   },
-                            // );
-                          },
-                          child: const Text('Lupa Kata Sandi'),
-                        ),
-                      ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 60,
-                        child: Consumer2<AuthProvider, PresentProvider>(
-                          builder: (context, auth, present, child) {
-                            if (auth.connectionState !=
-                                ConnectionState.active) {
-                              onPressed2() async {
-                                FocusScope.of(context).unfocus();
-                                if (formKey.currentState!.validate()) {
-                                  await DBHelper().deleteDb();
-                                  await auth
-                                      .login(nikController.text.trim(),
-                                          passController.text.trim())
-                                      .then(
-                                        (_) => Navigator.of(context)
-                                            .pushReplacementNamed(
-                                                HomePage.routeName),
-                                      )
-                                      .onError(
-                                    (error, stackTrace) {
-                                      return MotionToast.warning(
-                                        title: const Text('Login Failed'),
-                                        description: Text(
-                                          error.toString(),
-                                        ),
-                                      ).show(context);
-                                    },
-                                  );
-                                }
+                        const SizedBox(height: 30),
+                        SizedBox(
+                          height: 60,
+                          child: TextFormField(
+                            controller: passController,
+                            textInputAction: TextInputAction.go,
+                            autofillHints: const [AutofillHints.password],
+                            onFieldSubmitted: (value) {
+                              FocusScope.of(context).unfocus();
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Tidak boleh kosong';
                               }
-
-                              return ElevatedButton(
-                                onPressed: onPressed2,
-                                child: const Text('LOGIN'),
-                              );
-                            } else {
-                              return const Center(
-                                  child: CircularProgressIndicator.adaptive());
-                            }
-                          },
+                              return null;
+                            },
+                            obscureText: isVisible,
+                            style: const TextStyle(fontSize: 15),
+                            decoration: InputDecoration(
+                              labelText: 'Password',
+                              suffixIcon: IconButton(
+                                onPressed: () {
+                                  isVisible = !isVisible;
+                                  setState(() {});
+                                },
+                                icon: isVisible
+                                    ? const Icon(Icons.visibility)
+                                    : const Icon(Icons.visibility_off),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ],
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) {
+                                  return const ResetWebView();
+                                },
+                              ));
+                              // showDialog(
+                              //   context: context,
+                              //   builder: (context) {
+                              //     return AlertDialog(
+                              //       actions: [
+                              //         TextButton(
+                              //             onPressed: () {
+                              //               Navigator.of(context).pop();
+                              //             },
+                              //             child: const Text('OK'))
+                              //       ],
+                              //       content: const Text(
+                              //         'Silahkan hubungi admin untuk mengubah kata sandi anda',
+                              //         style: TextStyle(
+                              //           fontSize: 15,
+                              //         ),
+                              //       ),
+                              //     );
+                              //   },
+                              // );
+                            },
+                            child: const Text('Lupa Kata Sandi'),
+                          ),
+                        ),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 60,
+                          child: Consumer2<AuthProvider, PresentProvider>(
+                            builder: (context, auth, present, child) {
+                              if (auth.connectionState !=
+                                  ConnectionState.active) {
+                                onPressed2() async {
+                                  FocusScope.of(context).unfocus();
+                                  if (formKey.currentState!.validate()) {
+                                    await DBHelper().deleteDb();
+                                    await auth
+                                        .login(nikController.text.trim(),
+                                            passController.text.trim())
+                                        .then(
+                                          (_) => Navigator.of(context)
+                                              .pushReplacementNamed(
+                                                  HomePage.routeName),
+                                        )
+                                        .onError(
+                                      (error, stackTrace) {
+                                        return MotionToast.warning(
+                                          title: const Text('Login Failed'),
+                                          description: Text(
+                                            error.toString(),
+                                          ),
+                                        ).show(context);
+                                      },
+                                    );
+                                  }
+                                }
+
+                                return ElevatedButton(
+                                  onPressed: onPressed2,
+                                  child: const Text('LOGIN'),
+                                );
+                              } else {
+                                return const Center(
+                                    child:
+                                        CircularProgressIndicator.adaptive());
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ],

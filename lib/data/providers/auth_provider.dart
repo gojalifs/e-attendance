@@ -82,7 +82,7 @@ class AuthProvider with ChangeNotifier {
 
   Future logout() async {
     _connectionState = ConnectionState.active;
-    await _apiService.logout(user!.token!).whenComplete(() {
+    await _apiService.logout().whenComplete(() {
       _connectionState = ConnectionState.done;
     });
     await DBHelper().deleteDb();

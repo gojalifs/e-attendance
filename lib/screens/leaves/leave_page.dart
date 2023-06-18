@@ -205,17 +205,17 @@ class _LeavePageState extends State<LeavePage> {
                               ),
                             ],
                           ),
-                          CheckboxListTile(
-                            title: Text(
-                              'Potong Cuti',
-                              style: Theme.of(context).textTheme.titleSmall,
-                            ),
-                            value: isPaidLeave,
-                            onChanged: (value) {
-                              isPaidLeave = !isPaidLeave;
-                              setState(() {});
-                            },
-                          ),
+                          // CheckboxListTile(
+                          //   title: Text(
+                          //     'Potong Cuti',
+                          //     style: Theme.of(context).textTheme.titleSmall,
+                          //   ),
+                          //   value: isPaidLeave,
+                          //   onChanged: (value) {
+                          //     isPaidLeave = !isPaidLeave;
+                          //     setState(() {});
+                          //   },
+                          // ),
                           Row(
                             children: [
                               const Expanded(child: Text('Jenis Cuti')),

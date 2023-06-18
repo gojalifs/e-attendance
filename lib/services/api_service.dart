@@ -406,7 +406,7 @@ class ApiService {
     return result;
   }
 
-  Future logout(String token) async {
+  Future logout() async {
     var endpoint = Uri.parse('$_baseUrl/logout');
 
     try {
